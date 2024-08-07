@@ -1,0 +1,12 @@
+{
+    "recommendations": [
+        "streetsidesoftware.code-spell-checker",
+        "editorconfig.editorconfig",
+        "dbaeumer.vscode-eslint",
+        "christian-kohler.path-intellisense",
+        "SantaCodes.santacodes-region-viewer",
+        "foxundermoon.shell-format",
+        "github.vscode-github-actions",
+        "redhat.vscode-yaml"
+    ]
+}

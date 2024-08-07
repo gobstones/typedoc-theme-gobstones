@@ -1,0 +1,18 @@
+# Editor and style files
+.vscode/*
+.github/*
+.husky/*
+
+# tests
+test/*
+coverage
+
+# docs
+docs
+
+# Additional documentation
+TODO.md
+
+# Add files in init-files
+!init-files/*
+!config/*

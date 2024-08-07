@@ -1,0 +1,79 @@
+{
+  "name": "@gobstones/typedoc-theme-gobstones",
+  "description": "A simple theme for the Gobstones generated documentation.",
+  "version": "0.1.0",
+  "keywords": [
+    "Gobstones",
+    "typedoc-theme",
+    "typedoc-theme-gobstones"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gobstones/typedoc-theme-gobstones.git"
+  },
+  "homepage": "https://gobtones.github.io/typedoc-theme-gobstones",
+  "author": "Alan Rodas Bonjour <alanrodas@gmail.com>",
+  "license": "AGPL-3.0",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/index.d.ts"
+      ]
+    }
+  },
+  "packageManager": "npm@10.8.0",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "prepack": "npm start build",
+    "start": "nps"
+  },
+  "peerDependencies": {
+    "typedoc": "^0.26.4"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@eslint/compat": "^1.1.1",
+    "@eslint/eslintrc": "^3.1.0",
+    "@eslint/js": "^9.8.0",
+    "@types/node": "^22.0.2",
+    "commitizen": "^4.3.0",
+    "concurrently": "^8.2.2",
+    "conventional-changelog-cli": "^5.0.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "9.8.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-no-null": "^1.0.2",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-react-refresh": "^0.4.9",
+    "husky": "^9.1.4",
+    "is-ci": "^3.0.1",
+    "license-check-and-add": "^4.0.5",
+    "nps": "^5.10.0",
+    "prettier": "^3.3.3",
+    "rimraf": "^6.0.1",
+    "typedoc": "~0.26.4",
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.0.1"
+  }
+}
