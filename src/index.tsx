@@ -13,10 +13,21 @@
 import { Application } from 'typedoc';
 
 import { GobstonesTheme } from './GobstonesTheme';
+import { loadPlugin } from './plugins';
+import { MdnLinksPlugin } from './plugins/MdnLinksPlugin';
+import { MergeModulePlugin } from './plugins/MergeModulePlugin';
+import { NotExportedPlugin } from './plugins/NotExportedPlugin';
+import { RemoveReferencesPlugin } from './plugins/RemoveReferencesPlugin';
 
 /**
  * Called by TypeDoc when loading this theme as a plugin
  */
 export function load(app: Application) {
+    // Included plugins
+    loadPlugin(app, NotExportedPlugin);
+    loadPlugin(app, MergeModulePlugin);
+    loadPlugin(app, RemoveReferencesPlugin);
+    loadPlugin(app, MdnLinksPlugin);
+    // Main theme
     app.renderer.defineTheme('gobstones', GobstonesTheme);
 }

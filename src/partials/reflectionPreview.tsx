@@ -19,7 +19,7 @@ import {
     JSX
 } from 'typedoc';
 
-import { getKindClass, renderTypeParametersSignature } from '../lib';
+import { getKindClass, renderTypeParametersSignature } from './lib';
 
 export function reflectionPreview(context: DefaultThemeRenderContext, props: Reflection) {
     if (!(props instanceof DeclarationReflection)) return;

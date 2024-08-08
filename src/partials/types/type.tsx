@@ -26,7 +26,7 @@ import {
     JSX
 } from 'typedoc';
 
-import { getKindClass, join, stringify } from '../../lib';
+import { getKindClass, join, stringify } from '../lib';
 
 const EXPORTABLE: ReflectionKind =
     ReflectionKind.Class |

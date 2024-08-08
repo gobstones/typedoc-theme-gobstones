@@ -18,8 +18,8 @@ import {
     JSX
 } from 'typedoc';
 
-import { classNames, getDisplayName, wbr } from '../../lib';
 import { anchorIcon } from '../anchor-icon';
+import { classNames, getDisplayName, wbr } from '../lib';
 
 export function member(context: DefaultThemeRenderContext, props: DeclarationReflection | DocumentReflection) {
     context.page.pageHeadings.push({
@@ -36,11 +36,13 @@ export function member(context: DefaultThemeRenderContext, props: DeclarationRef
             <section class={classNames({ 'tsd-panel': true, 'tsd-member': true }, context.getReflectionClasses(props))}>
                 <a id={props.anchor} class="tsd-anchor"></a>
                 {!!props.name && (
-                    <h3 class="tsd-anchor-link">
-                        {context.reflectionFlags(props)}
-                        <span class={classNames({ deprecated: props.isDeprecated() })}>{wbr(props.name)}</span>
-                        {anchorIcon(context, props.anchor)}
-                    </h3>
+                    <>
+                        <div class="tsd-member-tags">{context.reflectionFlags(props)}</div>
+                        <h3 class="tsd-anchor-link">
+                            <span class={classNames({ deprecated: props.isDeprecated() })}>{wbr(props.name)}</span>
+                            {anchorIcon(context, props.anchor)}
+                        </h3>
+                    </>
                 )}
                 <div class="tsd-comment tsd-typography">
                     <JSX.Raw html={context.markdown(props.content)} />
@@ -53,11 +55,13 @@ export function member(context: DefaultThemeRenderContext, props: DeclarationRef
         <section class={classNames({ 'tsd-panel': true, 'tsd-member': true }, context.getReflectionClasses(props))}>
             <a id={props.anchor} class="tsd-anchor"></a>
             {!!props.name && (
-                <h3 class="tsd-anchor-link">
-                    {context.reflectionFlags(props)}
-                    <span class={classNames({ deprecated: props.isDeprecated() })}>{wbr(props.name)}</span>
-                    {anchorIcon(context, props.anchor)}
-                </h3>
+                <>
+                    <div class="tsd-member-tags">{context.reflectionFlags(props)}</div>
+                    <h3 class="tsd-anchor-link">
+                        <span class={classNames({ deprecated: props.isDeprecated() })}>{wbr(props.name)}</span>
+                        {anchorIcon(context, props.anchor)}
+                    </h3>
+                </>
             )}
             {props.signatures
                 ? context.memberSignatures(props)

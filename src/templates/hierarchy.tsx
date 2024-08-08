@@ -13,7 +13,7 @@
 import { JSX } from 'typedoc';
 import type { DefaultThemeRenderContext, PageEvent, DeclarationReflection, ProjectReflection } from 'typedoc';
 
-import { getHierarchyRoots } from '../lib';
+import { getHierarchyRoots } from '../partials/lib';
 
 function fullHierarchy(
     context: DefaultThemeRenderContext,

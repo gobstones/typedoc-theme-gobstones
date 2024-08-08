@@ -12,7 +12,7 @@
  */
 import { DefaultThemeRenderContext, DeclarationReflection, ReflectionType, SignatureReflection, JSX } from 'typedoc';
 
-import { classNames, getKindClass, wbr } from '../lib';
+import { classNames, getKindClass, wbr } from './lib';
 
 export const parameter = (context: DefaultThemeRenderContext, props: DeclarationReflection) => (
     <>

@@ -13,7 +13,7 @@
 /* eslint-disable no-null/no-null */
 import { DefaultThemeRenderContext, ReflectionType, SignatureReflection, JSX } from 'typedoc';
 
-import { hasTypeParameters } from '../../lib';
+import { hasTypeParameters } from '../lib';
 
 export function memberSignatureBody(
     context: DefaultThemeRenderContext,
@@ -24,7 +24,6 @@ export function memberSignatureBody(
 
     return (
         <>
-            {context.reflectionFlags(props)}
             {context.commentSummary(props)}
 
             {hasTypeParameters(props) && context.typeParameters(props.typeParameters)}
@@ -34,9 +33,9 @@ export function memberSignatureBody(
                     <h4 class="tsd-parameters-title">{context.i18n.kind_plural_parameter()}</h4>
                     <ul class="tsd-parameter-list">
                         {props.parameters.map((item) => (
-                            <li>
+                            <li class="tsd-parameter-description">
+                                <div class="tsd-parameter-tags">{context.reflectionFlags(item)}</div>
                                 <span>
-                                    {context.reflectionFlags(item)}
                                     {!!item.flags.isRest && <span class="tsd-signature-symbol">...</span>}
                                     <span class="tsd-kind-parameter">{item.name}</span>
                                     {': '}
@@ -44,7 +43,7 @@ export function memberSignatureBody(
 
                                     {item.defaultValue !== null && (
                                         <span class="tsd-signature-symbol">
-                                            {' = '}
+                                            {item.defaultValue && ' = '}
                                             {item.defaultValue}
                                         </span>
                                     )}

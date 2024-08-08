@@ -13,7 +13,7 @@
 import { JSX } from 'typedoc';
 import type { DeclarationReflection, ReflectionType, DefaultThemeRenderContext } from 'typedoc';
 
-import { getKindClass, hasTypeParameters, renderTypeParametersSignature, wbr } from '../../lib';
+import { getKindClass, hasTypeParameters, renderTypeParametersSignature, wbr } from '../lib';
 
 function renderingTypeDeclarationIsUseful(declaration: DeclarationReflection): boolean {
     if (declaration.hasComment()) return true;

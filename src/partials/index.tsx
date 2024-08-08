@@ -13,7 +13,7 @@
 import { JSX } from 'typedoc';
 import type { DefaultThemeRenderContext, ContainerReflection, ReflectionCategory, ReflectionGroup } from 'typedoc';
 
-import { classNames, renderName } from '../lib';
+import { classNames, renderName } from './lib';
 
 function renderCategory(
     { urlTo, icons, getReflectionClasses, markdown }: DefaultThemeRenderContext,

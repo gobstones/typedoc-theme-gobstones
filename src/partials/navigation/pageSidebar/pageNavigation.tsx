@@ -12,7 +12,7 @@
  */
 import { Reflection, JSX, PageEvent, PageHeading, DefaultThemeRenderContext } from 'typedoc';
 
-import { wbr } from '../../../lib';
+import { wbr } from '../../lib';
 
 function buildSectionNavigation(context: DefaultThemeRenderContext, headings: PageHeading[]) {
     const levels: JSX.Element[][] = [[]];

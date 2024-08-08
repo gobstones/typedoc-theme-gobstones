@@ -12,7 +12,7 @@
  */
 import { DefaultThemeRenderContext, ParameterReflection, ReflectionKind, SignatureReflection, JSX } from 'typedoc';
 
-import { getKindClass, join, renderTypeParametersSignature, wbr } from '../../lib';
+import { getKindClass, join, renderTypeParametersSignature, wbr } from '../lib';
 
 function renderParameterWithType(context: DefaultThemeRenderContext, item: ParameterReflection) {
     return (
