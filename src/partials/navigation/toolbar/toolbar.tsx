@@ -18,6 +18,7 @@ import { getDisplayName } from '../../../lib';
 export const toolbar = (context: DefaultThemeRenderContext, props: PageEvent<Reflection>) => (
     <header class="tsd-page-toolbar">
         <div class="tsd-toolbar-contents container">
+            <img class="tsd-toolbar-icon" src="/assets/img/iso_gobstones.svg" />
             <div class="table-cell" id="tsd-search" data-base={context.relativeURL('./')}>
                 <div class="field">
                     <label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption">
@@ -54,6 +55,12 @@ export const toolbar = (context: DefaultThemeRenderContext, props: PageEvent<Ref
                     {context.icons.menu()}
                 </a>
             </div>
+            <a
+                class="tsd-toolbar-icon-link"
+                href={`http://github.com/${props.project.packageName?.startsWith('@') ? props.project.packageName?.substring(1) : (props.project.packageName as string)}`}
+            >
+                <img class="tsd-toolbar-icon" src="/assets/img/iso_github.svg" alt="Go to repository" />
+            </a>
         </div>
     </header>
 );

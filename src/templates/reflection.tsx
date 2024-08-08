@@ -80,9 +80,9 @@ export function reflectionTemplate(context: DefaultThemeRenderContext, props: Pa
                     {!!props.model.indexSignatures?.length && (
                         <section class={classNames({ 'tsd-panel': true }, context.getReflectionClasses(props.model))}>
                             <h4 class="tsd-before-signature">{context.i18n.theme_indexable()}</h4>
-                            <ul class="tsd-signatures">
+                            <div class="tsd-signatures">
                                 {props.model.indexSignatures.map((index) => renderIndexSignature(context, index))}
-                            </ul>
+                            </div>
                         </section>
                     )}
                     {!props.model.signatures && context.memberSources(props.model)}

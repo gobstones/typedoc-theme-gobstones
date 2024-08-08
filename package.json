@@ -1,7 +1,7 @@
 {
   "name": "@gobstones/typedoc-theme-gobstones",
   "description": "A simple theme for the Gobstones generated documentation.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "keywords": [
     "Gobstones",
     "typedoc-theme",
@@ -75,5 +75,10 @@
     "typedoc": "~0.26.4",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.0.1"
+  },
+  "dependencies": {
+    "typedoc-plugin-mdn-links": "^3.2.7",
+    "typedoc-plugin-merge-modules": "^6.0.0",
+    "typedoc-plugin-remove-references": "^0.0.6"
   }
 }

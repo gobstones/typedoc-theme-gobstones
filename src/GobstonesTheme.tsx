@@ -13,7 +13,15 @@
 import fs from 'fs';
 import path from 'path';
 
-import { DefaultTheme, PageEvent, Reflection, RendererEvent } from 'typedoc';
+import {
+    DeclarationReflection,
+    DefaultTheme,
+    DocumentReflection,
+    PageEvent,
+    Reflection,
+    RendererEvent,
+    SignatureReflection
+} from 'typedoc';
 
 import { GobstonesThemeContext } from './GobstonesThemeContext';
 
@@ -64,5 +72,60 @@ export class GobstonesTheme extends DefaultTheme {
         // The render controls the different components and files this
         // theme is going to use.
         return new GobstonesThemeContext(this, pageEvent, this.application.options);
+    }
+
+    getReflectionClasses(reflection: DeclarationReflection | DocumentReflection) {
+        function toStyleClass(str: string): string {
+            return str.replace(/(\w)([A-Z])/g, (_m, m1: string, m2: string) => m1 + '-' + m2).toLowerCase();
+        }
+
+        const filters = this.application.options.getValue('visibilityFilters') as Record<string, boolean>;
+
+        const classes: string[] = [];
+
+        // Filter classes should match up with the settings function in
+        // partials/navigation.tsx.
+        for (const key of Object.keys(filters)) {
+            if (key === 'inherited') {
+                if (reflection.flags.isInherited) {
+                    classes.push('tsd-is-inherited');
+                }
+            } else if (key === 'protected') {
+                if (reflection.flags.isProtected) {
+                    classes.push('tsd-is-protected');
+                }
+            } else if (key === 'private') {
+                if (reflection.flags.isPrivate) {
+                    classes.push('tsd-is-private');
+                }
+            } else if (key === 'external') {
+                if (reflection.flags.isExternal) {
+                    classes.push('tsd-is-external');
+                }
+            } else if (key.startsWith('@')) {
+                let firstSignature: SignatureReflection | undefined;
+
+                if (reflection.isDeclaration()) {
+                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+                    const declRefl = reflection as DeclarationReflection;
+                    firstSignature = declRefl.signatures?.[0];
+                }
+
+                if (key === '@deprecated') {
+                    if (reflection.isDeprecated()) {
+                        classes.push(toStyleClass(`tsd-is-${key.substring(1)}`));
+                    }
+                } else if (
+                    reflection.comment?.hasModifier(key as `@${string}`) ||
+                    reflection.comment?.getTag(key as `@${string}`) ||
+                    (firstSignature && firstSignature.comment?.hasModifier(key as `@${string}`)) ||
+                    (firstSignature && firstSignature.comment?.getTag(key as `@${string}`))
+                ) {
+                    classes.push(toStyleClass(`tsd-is-${key.substring(1)}`));
+                }
+            }
+        }
+
+        return classes.join(' ');
     }
 }

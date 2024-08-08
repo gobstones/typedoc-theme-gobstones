@@ -26,5 +26,7 @@ export function reflectionFlags(context: DefaultThemeRenderContext, props: Refle
         }
     }
 
-    return join(' ', allFlags as unknown as JSX.Element[], (item: JSX.Element) => <code class="tsd-tag">{item}</code>);
+    return join(' ', allFlags as unknown as JSX.Element[], (item: JSX.Element) => (
+        <code class={`tsd-tag tsd-tag-${(item as unknown as string).toLowerCase()}`}>{item}</code>
+    ));
 }

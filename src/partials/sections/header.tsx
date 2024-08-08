@@ -17,23 +17,30 @@ import { classNames, getDisplayName, hasTypeParameters, join } from '../../lib';
 export const header = (context: DefaultThemeRenderContext, props: PageEvent<Reflection>) => {
     const HeadingLevel = props.model.isProject() ? 'h2' : 'h1';
     return (
-        <div class="tsd-page-title">
+        <header class="tsd-page-header">
             {!!props.model.parent && <ul class="tsd-breadcrumb">{context.breadcrumb(props.model)}</ul>}
-            {!props.model.isDocument() && (
-                <HeadingLevel class={classNames({ deprecated: props.model.isDeprecated() })}>
-                    {props.model.kind !== ReflectionKind.Project &&
-                        `${context.internationalization.kindSingularString(props.model.kind)} `}
-                    {getDisplayName(props.model)}
-                    {hasTypeParameters(props.model) && (
-                        <>
-                            {'<'}
-                            {join(', ', props.model.typeParameters, (item) => item.name)}
-                            {'>'}
-                        </>
-                    )}
-                    {context.reflectionFlags(props.model)}
-                </HeadingLevel>
-            )}
-        </div>
+
+            {context.reflectionFlags(props.model)}
+            {props.model.isDeclaration() &&
+                props.model?.signatures?.[0] &&
+                context.reflectionFlags(props.model?.signatures?.[0])}
+
+            <div class="tsd-page-title">
+                {!props.model.isDocument() && (
+                    <HeadingLevel class={classNames({ deprecated: props.model.isDeprecated() })}>
+                        {props.model.kind !== ReflectionKind.Project &&
+                            `${context.internationalization.kindSingularString(props.model.kind)} `}
+                        {getDisplayName(props.model)}
+                        {hasTypeParameters(props.model) && (
+                            <>
+                                {'<'}
+                                {join(', ', props.model.typeParameters, (item) => item.name)}
+                                {'>'}
+                            </>
+                        )}
+                    </HeadingLevel>
+                )}
+            </div>
+        </header>
     );
 };
