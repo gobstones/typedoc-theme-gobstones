@@ -51,7 +51,7 @@
     "typedoc": "^0.26.4"
   },
   "devDependencies": {
-    "@gobstones/gobstones-scripts": "^0.9.1",
+    "@gobstones/gobstones-scripts": "^0.9.2",
     "husky": "^9.1.4"
   },
   "dependencies": {
