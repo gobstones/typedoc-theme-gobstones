@@ -1,19 +1,23 @@
 # Read parameters
-REMOTE_NAME=$1;
-REMOTE_URL=$2;
+REMOTE_NAME=$1
+REMOTE_URL=$2
 # Read the input and split it approprietly
-INPUT=$(cat);
-COUNTER=0;
+INPUT=$(cat)
+COUNTER=0
 for WORD in $INPUT; do
     case $COUNTER in
         0)
-            LOCAL_REF=$WORD;;
+            LOCAL_REF=$WORD
+            ;;
         1)
-            LOCAL_OBJ_NAME=$WORD;;
+            LOCAL_OBJ_NAME=$WORD
+            ;;
         2)
-            REMOTE_REF=$WORD;;
+            REMOTE_REF=$WORD
+            ;;
         3)
-            REMOTE_OBJ_NAME=$WORD;;
+            REMOTE_OBJ_NAME=$WORD
+            ;;
     esac
     COUNTER=$((COUNTER + 1))
 done
@@ -21,14 +25,16 @@ done
 case "$LOCAL_REF" in
     refs\/tags*)
         # Apply specific code when publishing tags
-        IS_TAG=1;;
+        IS_TAG=1
+        ;;
     *)
         # Apply specific code when publishing any branch
-        IS_TAG=0;;
+        IS_TAG=0
+        ;;
 esac
 
 # Set failing on command fail, and undefined variable use
-set -eu;
+set -eu
 
 # This hook is called by git-push and can be used to prevent a
 # push from taking place. The hook is called with two parameters
@@ -65,13 +71,13 @@ set -eu;
 # to match that of the tag.
 
 # Show welcome message
-echo "**************************";
-echo "Running pre push hooks";
-echo "**************************";
-echo "";
+echo "**************************"
+echo "Running pre push hooks"
+echo "**************************"
+echo ""
 
 # Run all the tests
-echo "Running tests";
-npx --no -- nps test;
+echo "Running tests"
+npx --no -- gobstones-scripts run test --silent
 
-exit 0;
+exit 0

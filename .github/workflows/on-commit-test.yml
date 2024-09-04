@@ -10,6 +10,8 @@ jobs:
     test:
         name: Run tests
         runs-on: ubuntu-latest
+        env:
+            NODE_OPTIONS: --experimental-modules
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
@@ -17,9 +19,9 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: '20'
-              env:
-                  HUSKY: 0
             - name: Installing project dependencies
               run: npm install
-            - name: Linting the code
-              run: npm start lint
+            - name: Test the code
+              run: npm start test
+              env:
+                  CI: true

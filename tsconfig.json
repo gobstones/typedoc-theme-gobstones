@@ -1,14 +1,12 @@
 {
-	"compilerOptions": {
-		// "allowSyntheticDefaultImports": true,
-		// "alwaysStrict": true,
-		"baseUrl": "src",
+    "compilerOptions": {
+        "baseUrl": "src",
         "outDir": "./dist",
         "target": "ES2022",
         "strict": true,
-		"esModuleInterop": true,
+        "esModuleInterop": true,
         "allowJs": true,
-        "sourceMap": true,
+        "sourceMap": false,
         "declaration": true,
         "declarationMap": true,
         "declarationDir": "./dist/typings",
@@ -17,22 +15,11 @@
         "composite": false,
         "skipLibCheck": true,
         "strictNullChecks": true,
-		// "forceConsistentCasingInFileNames": true,
-		"jsx": "react",
-		"jsxFactory": "JSX.createElement",
-		"jsxFragmentFactory": "JSX.Fragment",
-		"module": "CommonJS",
-		"moduleResolution": "Node"
-		// "noFallthroughCasesInSwitch": true,
-		// "noImplicitAny": true,
-		// "noImplicitReturns": true,
-		// "noImplicitThis": true,
-		// "noUnusedLocals": false,
-		// "noUnusedParameters": false,
-		// "strictBindCallApply": true,
-		// "strictFunctionTypes": true,
-		// "strictNullChecks": true,
-		// "strictPropertyInitialization": true,
-	},
-	"include": ["src/**/*", "./src/@types/*.d.ts"]
+        "jsx": "react",
+        "jsxFactory": "JSX.createElement",
+        "jsxFragmentFactory": "JSX.Fragment",
+        "module": "CommonJS",
+        "moduleResolution": "Node"
+    },
+    "include": ["src/**/*", "./src/@types/*.d.ts"]
 }

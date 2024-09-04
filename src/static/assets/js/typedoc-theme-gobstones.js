@@ -1,5 +1,6 @@
+/** @module @ignore */
 /* eslint-disable no-undef */
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
     const privateRemarks = document.getElementById('Private Remarks');
     if (!privateRemarks) return;
     const privateRemarksTitle = privateRemarks.parentElement;

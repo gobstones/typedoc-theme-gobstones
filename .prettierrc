@@ -1,0 +1,73 @@
+{
+    "plugins": ["prettier-plugin-ini", "prettier-plugin-sh"],
+    "printWidth": 120,
+    "tabWidth": 4,
+    "useTabs": false,
+    "semi": true,
+    "singleQuote": true,
+    "endOfLine": "lf",
+    "trailingComma": "none",
+    "overrides": [
+        {
+            "files": ["*.js", "**/*.js", "*.jsx", "**/*.jsx"],
+            "options": {
+                "parser": "babel"
+            }
+        },
+        {
+            "files": ["*.ts", "**/*.ts", "*.tsx", "**/*.tsx"],
+            "options": {
+                "parser": "typescript"
+            }
+        },
+        {
+            "files": ["*.yml", "**/*.yml", "*.yaml", "**/*.yaml"],
+            "options": {
+                "parser": "yaml"
+            }
+        },
+        {
+            "files": ["*.json", "**/*.json", ".czrc", "**/.czrc"],
+            "options": {
+                "parser": "json"
+            }
+        },
+        {
+            "files": ["package.json"],
+            "options": {
+                "tabWidth": 2,
+                "parser": "json"
+            }
+        },
+        {
+            "files": ["*.md", "**/*.md"],
+            "options": {
+                "parser": "markdown"
+            }
+        },
+        {
+            "files": ["*.css", "**/*.css", "*.scss", "**/*.scss", "*.less", "**/*.less"],
+            "options": {
+                "parser": "css"
+            }
+        },
+        {
+            "files": ["*.html", "**/*.html"],
+            "options": {
+                "parser": "html"
+            }
+        },
+        {
+            "files": ["**/*.ini", ".editorconfig", ".npmrc"],
+            "options": {
+                "parser": "ini"
+            }
+        },
+        {
+            "files": [".gitignore", ".npmignore", ".husky/*"],
+            "options": {
+                "parser": "sh"
+            }
+        }
+    ]
+}

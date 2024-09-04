@@ -1,9 +1,9 @@
-# OS generated files #
+# OS generated files
 .DS_Store
 Thumbs.db
 .tmp/
 
-# IDE generated file #
+# IDE generated file
 .idea/
 
 # PackageManager specific lock files
@@ -28,7 +28,3 @@ dist/
 
 # Docs generated folder
 docs/
-
-# Verdaccio storage
-test/verdaccio/storage
-

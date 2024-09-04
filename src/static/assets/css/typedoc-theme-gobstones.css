@@ -45,6 +45,16 @@ html {
     align-self: center;
     margin-right: 0.5rem;
 }
+:root[data-theme='dark'] .tsd-icon-inverted {
+    -webkit-filter: invert(.75); /* safari 6.0 - 9.0 */
+    filter: invert(.75);
+}
+@media(prefers-color-scheme: dark) {
+    :root[data-theme='os'] .tsd-icon-inverted {
+        -webkit-filter: invert(.75); /* safari 6.0 - 9.0 */
+        filter: invert(.75);
+    }
+}
 
 /* Improve headings */
 .tsd-page-header .tsd-breadcrumb {

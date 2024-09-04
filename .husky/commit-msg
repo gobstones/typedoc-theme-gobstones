@@ -1,8 +1,8 @@
 # Read parameters
-COMMIT_MSG_FILE=$1;
+COMMIT_MSG_FILE=$1
 
 # Set failing on command fail, and undefined variable use
-set -eu;
+set -eu
 
 # This hook is invoked by git-commit and git-merge, and can be
 # bypassed with the --no-verify option. It takes a single
@@ -23,10 +23,10 @@ set -eu;
 # message sent has the correct format for the project, aborting otherwise.
 
 # Show welcome message
-echo "**************************";
-echo "Linting the commit message";
-echo "**************************";
-echo "";
+echo "**************************"
+echo "Linting the commit message"
+echo "**************************"
+echo ""
 
 # Run commitlint
-npx --no -- commitlint --edit ${1};
+npx --no -- commitlint --edit ${1}

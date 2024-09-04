@@ -16,7 +16,6 @@ jobs:
               with:
                   node-version: '20'
               env:
-                  HUSKY: 0
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
             - name: Installing project dependencies
               run: npm install
