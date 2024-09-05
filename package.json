@@ -1,7 +1,7 @@
 {
   "name": "@gobstones/typedoc-theme-gobstones",
   "description": "A simple theme for the Gobstones generated documentation.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "keywords": ["Gobstones", "typedoc-theme", "typedoc-theme-gobstones"],
   "repository": {
     "type": "git",
