@@ -12,12 +12,25 @@
  */
 
 /**
- * This module contains the components that are used when rendering the toolbar.
- *
- * @module Theme/Partials/Navigation/Toolbar
+ * @module Theme/Icons
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
- *
- * @internal
  */
 
-export * from './toolbar';
+import { JSX, ReflectionKind } from 'typedoc';
+
+export type IconType =
+    | ReflectionKind
+    | 'chevronDown'
+    | 'checkbox'
+    | 'menu'
+    | 'search'
+    | 'chevronSmall'
+    | 'anchor'
+    | 'folder'
+    | 'alertNote'
+    | 'alertTip'
+    | 'alertImportant'
+    | 'alertWarning'
+    | 'alertCaution';
+
+export type IconRecord = Record<IconType, () => JSX.Element>;

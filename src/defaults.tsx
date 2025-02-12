@@ -25,23 +25,36 @@ import { Application } from 'typedoc';
  * @param typedocApp - The instance of the running TypeDoc application
  *
  * @returns A TypeDoc partial configuration.
+ *
+ * @internal
  */
 export const getDefaults = (typedocApp: Application): Record<string, unknown> => ({
-    includeVersion: true,
-    categorizeByGroup: true,
+    // Input
+    entryPointStrategy: 'expand',
+    exclude: ['./node_modules/**/*', './**/*.test.ts', './src/index.ts'],
     excludeExternals: true,
     excludeInternal: false,
     excludePrivate: false,
-    hideGenerator: true,
+    // Input (at TypeDoc docs, but is actually output)
     disableSources: false,
+    includeVersion: true,
+    // Output
+    categorizeByGroup: true,
+    hideGenerator: true,
     githubPages: true,
-    excludeTags: ['@override', '@virtual', '@satisfies', '@overload'],
+    headings: {
+        readme: false,
+        document: true
+    },
     visibilityFilters: {
         '@internal': false,
         protected: false,
         private: false,
         inherited: false
     },
-    mergeModulesMergeMode: 'module-category',
-    modifierTags: ['@mergeTarget', ...typedocApp.options.getValue('modifierTags')]
+    // Comments
+    modifierTags: ['@mergeTarget', ...typedocApp.options.getValue('modifierTags')],
+    excludeTags: ['@override', '@virtual', '@satisfies', '@overload'],
+    // Plugins
+    mergeModulesMergeMode: 'module-category'
 });

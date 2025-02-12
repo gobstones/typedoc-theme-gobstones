@@ -10,8 +10,13 @@
  * You may read the full license at https://gobstones.github.io/gobstones-guidelines/LICENSE.
  * *****************************************************************************
  */
+
 /**
  * This module contains the components that are used when rendering types.
+ *
+ * @remarks
+ * All the types remain identical to their equivalents in the default theme, and
+ * have not been changed for now.
  *
  * @module Theme/Partials/Types
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
@@ -22,3 +27,6 @@
 export * from './type';
 export * from './typeAndParent';
 export * from './typeParameters';
+export * from './typeDetails';
+export * from './typeDetailsIfUseful';
+export * from './typeDeclaration';

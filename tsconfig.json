@@ -3,13 +3,15 @@
         "baseUrl": "src",
         "outDir": "./dist",
         "target": "ES2022",
+        "module": "ES2022",
+        "moduleResolution": "Node",
         "strict": true,
         "esModuleInterop": true,
         "allowJs": true,
-        "sourceMap": false,
+        "sourceMap": true,
         "declaration": true,
         "declarationMap": true,
-        "declarationDir": "./dist/typings",
+        "declarationDir": "./dist",
         "resolveJsonModule": true,
         "stripInternal": true,
         "composite": false,
@@ -17,9 +19,7 @@
         "strictNullChecks": true,
         "jsx": "react",
         "jsxFactory": "JSX.createElement",
-        "jsxFragmentFactory": "JSX.Fragment",
-        "module": "CommonJS",
-        "moduleResolution": "Node"
+        "jsxFragmentFactory": "JSX.Fragment"
     },
     "include": ["src/**/*", "./src/@types/*.d.ts"]
 }

@@ -20,12 +20,13 @@ import { DefaultThemeRenderContext, JSX, Reflection } from 'typedoc';
 
 import { join } from '../../../Utils/lib';
 
-/**
- * A
- */
-const flagsNotRendered: `@${string}`[] = ['@showCategories', '@showGroups', '@hideCategories', '@hideGroups'];
-
 export const reflectionFlags = (context: DefaultThemeRenderContext, props: Reflection): JSX.Element => {
+    const flagsNotRendered: `@${string}`[] = context.options.getValue('notRenderedTags') ?? [
+        '@showCategories',
+        '@showGroups',
+        '@hideCategories',
+        '@hideGroups'
+    ];
     const allFlags = props.flags.getFlagStrings(context.internationalization);
     if (props.comment) {
         for (const tag of props.comment.modifierTags) {

@@ -17,23 +17,23 @@
  */
 
 import { JSX } from 'typedoc';
-import type { DeclarationReflection, DefaultThemeRenderContext } from 'typedoc';
+import type { DeclarationReflection, DefaultThemeRenderContext, DocumentReflection } from 'typedoc';
 
 import { classNames } from '../../../Utils/lib';
-import { anchorIcon } from '../anchor-icon';
+import { anchorIcon } from '../Others/anchorIcon';
 
 export const memberSignatures = (context: DefaultThemeRenderContext, props: DeclarationReflection): JSX.Element => (
     <>
         <div class={classNames({ 'tsd-signatures': true }, context.getReflectionClasses(props))}>
             {props.signatures?.map((item) => (
-                <>
+                <li class={context.getReflectionClasses(item as unknown as DocumentReflection)}>
                     <div class="tsd-signature tsd-anchor-link">
-                        <a id={item.anchor} class="tsd-anchor"></a>
+                        {item.anchor && <a id={item.anchor} class="tsd-anchor"></a>}
                         {context.memberSignatureTitle(item)}
                         {anchorIcon(context, item.anchor)}
                     </div>
                     <div class="tsd-description">{context.memberSignatureBody(item)}</div>
-                </>
+                </li>
             ))}
         </div>
     </>

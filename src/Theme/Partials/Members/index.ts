@@ -10,8 +10,15 @@
  * You may read the full license at https://gobstones.github.io/gobstones-guidelines/LICENSE.
  * *****************************************************************************
  */
+
 /**
  * This module contains the components that are used when rendering different members.
+ *
+ * @remarks
+ * In this particular case, all elements remain identical to the ones in the default theme,
+ * except for the way a particular member is rendered. The member.tsx file contains changes
+ * regarding the position where the reflection flags are presented in theme, so they can be
+ * styled in a particular fashion.
  *
  * @module Theme/Partials/Members
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
@@ -23,7 +30,6 @@ export * from './member';
 export * from './members';
 export * from './member.declaration';
 export * from './member.getterSetter';
-export * from './member.reference';
 export * from './member.signatures';
 export * from './member.signature.body';
 export * from './member.signature.title';

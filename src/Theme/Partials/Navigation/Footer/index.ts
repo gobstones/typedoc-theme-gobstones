@@ -12,12 +12,7 @@
  */
 
 /**
- * This module contains the components that are used when rendering the toolbar.
- *
- * @module Theme/Partials/Navigation/Toolbar
+ * @module Theme/Partials/Navigation/Footer
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
- *
- * @internal
  */
-
-export * from './toolbar';
+export * from './footer';

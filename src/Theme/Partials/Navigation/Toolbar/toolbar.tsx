@@ -25,6 +25,7 @@ export const toolbar = (context: DefaultThemeRenderContext, props: PageEvent<Ref
     <header class="tsd-page-toolbar">
         <div class="tsd-toolbar-contents container">
             <img class="tsd-toolbar-icon" src="/assets/img/iso_gobstones.svg" />
+
             <div class="table-cell" id="tsd-search" data-base={context.relativeURL('./')}>
                 <div class="field">
                     <label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption">

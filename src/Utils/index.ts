@@ -10,6 +10,7 @@
  * You may read the full license at https://gobstones.github.io/gobstones-guidelines/LICENSE.
  * *****************************************************************************
  */
+
 /**
  * This module contains utility functions and elements used through the theme.
  *
@@ -24,5 +25,6 @@
  */
 
 export * from './lib';
+export * from './formatter';
 export * from './Options';
 export * from './Plugins';

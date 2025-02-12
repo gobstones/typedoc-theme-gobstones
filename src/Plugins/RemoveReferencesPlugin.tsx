@@ -16,18 +16,25 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-// @ts-expect-error: Plugin is JS only, ignore import as any.
-import { load } from 'typedoc-plugin-remove-references';
+import { Context, Converter, ReflectionKind } from 'typedoc';
 
 import { TypedocPlugin } from '../Utils/Plugins';
 
 /**
- * A Plugin class that wraps the `typedoc-plugin-remove-references` plugin.
+ * A Plugin to remove re-exports references.
+ *
+ * This is just a copy of the code at `typedoc-plugin-remove-references`
+ * that has not been updated in a while and it's still in CJS while everything has been
+ * migrated to ESM. If in the future the module receives updates we can wrap
+ * around it as we do with other plugins.
  */
 export class RemoveReferencesPlugin extends TypedocPlugin {
     /** @inheritdoc */
     public initialize(): void {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        load(this.application);
+        this.application.converter.on(Converter.EVENT_RESOLVE_BEGIN, (context: Context) => {
+            for (const reflection of context.project.getReflectionsByKind(ReflectionKind.Reference)) {
+                context.project.removeReflection(reflection);
+            }
+        });
     }
 }

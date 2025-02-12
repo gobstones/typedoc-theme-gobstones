@@ -10,8 +10,13 @@
  * You may read the full license at https://gobstones.github.io/gobstones-guidelines/LICENSE.
  * *****************************************************************************
  */
+
 /**
  * This module contains the components that are used when rendering comments.
+ *
+ * @remarks
+ * In this case they remain exactly identical to the ones in the default theme,
+ * although they may change in the future.
  *
  * @module Theme/Partials/Comments
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
@@ -19,6 +24,8 @@
  * @internal
  */
 
+export * from './commentShortSummary';
 export * from './commentSummary';
 export * from './commentTags';
 export * from './reflectionFlags';
+export * from './renderDisplayParts';

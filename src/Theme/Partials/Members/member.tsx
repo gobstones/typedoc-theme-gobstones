@@ -16,16 +16,15 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import {
-    DeclarationReflection,
-    DefaultThemeRenderContext,
-    DocumentReflection,
-    JSX,
-    ReferenceReflection
-} from 'typedoc';
+/*
+This is similar to the default, but the position where the reflection flags
+are presented is different, and we give them custom tags.
+*/
+
+import { DeclarationReflection, DefaultThemeRenderContext, DocumentReflection, JSX } from 'typedoc';
 
 import { classNames, getDisplayName, wbr } from '../../../Utils/lib';
-import { anchorIcon } from '../anchor-icon';
+import { anchorIcon } from '../Others/anchorIcon';
 
 export const member = (
     context: DefaultThemeRenderContext,
@@ -76,9 +75,7 @@ export const member = (
                 ? context.memberSignatures(props)
                 : props.hasGetterOrSetter()
                   ? context.memberGetterSetter(props)
-                  : props instanceof ReferenceReflection
-                    ? context.memberReference(props)
-                    : context.memberDeclaration(props)}
+                  : context.memberDeclaration(props)}
 
             {props.groups?.map((item) => item.children.map((i) => !i.hasOwnDocument && context.member(i)))}
         </section>

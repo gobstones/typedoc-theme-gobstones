@@ -10,6 +10,7 @@
  * You may read the full license at https://gobstones.github.io/gobstones-guidelines/LICENSE.
  * *****************************************************************************
  */
+
 /**
  * This sub-module exposes the main templates of the theme.
  * A template is an organization for the main elements of the

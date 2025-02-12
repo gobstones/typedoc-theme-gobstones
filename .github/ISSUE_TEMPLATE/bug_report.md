@@ -20,7 +20,7 @@ A clear and concise description of what you expected to happen.
 
 ## Versions
 
--   Library Version:
--   Node/NPM Version (if any):
--   Operating System Version:
--   Browser Version:
+- Library Version:
+- Node/NPM Version (if any):
+- Operating System Version:
+- Browser Version:

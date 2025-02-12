@@ -10,6 +10,7 @@
  * You may read the full license at https://gobstones.github.io/gobstones-guidelines/LICENSE.
  * *****************************************************************************
  */
+
 /**
  * @module Utils
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
@@ -44,7 +45,7 @@ export abstract class TypedocPlugin {
      * This function is called when the plugin is loaded, after instantiation
      * by the {@link loadPlugin} function.
      */
-    public abstract initialize(): void;
+    public abstract initialize(): void | Promise<void>;
 }
 
 /**
@@ -54,5 +55,5 @@ export abstract class TypedocPlugin {
  * @param plugin - The class of the plugin to load.
  */
 export const loadPlugin = (typedocApp: Application, plugin: new (app: Application) => TypedocPlugin): void => {
-    new plugin(typedocApp).initialize();
+    void new plugin(typedocApp).initialize();
 };

@@ -22,8 +22,11 @@ import { classNames } from '../../../../Utils/lib';
 
 export const navigation = (context: DefaultThemeRenderContext, props: PageEvent<Reflection>): JSX.Element => (
     <nav class="tsd-navigation">
-        <a href={context.urlTo(props.project)} class={classNames({ current: props.project === props.model })}>
-            {context.icons[ReflectionKind.Project]()}
+        <a
+            href={context.options.getValue('titleLink') || context.relativeURL('index.html')}
+            class={classNames({ current: props.project === props.model })}
+        >
+            {context.icons[ReflectionKind.Document]()}
             <span>Overview</span>
         </a>
         <ul class="tsd-small-nested-navigation" id="tsd-nav-container" data-base={context.relativeURL('./')}>

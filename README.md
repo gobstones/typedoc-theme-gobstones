@@ -3,10 +3,10 @@
 This a customized theme for [TypeDoc](https://typedoc.org/) used for all the generated documentation throughout the **GobstonesWeb2** project.
 It's based on the default theme used by TypeDoc, with mild improvements in readability and styling, and includes by default several plugins built-in so the user does not require to include them in their configuration. Included plugins are:
 
--   [typedoc-plugin-mdn-links](https://github.com/Gerrit0/typedoc-plugin-mdn-links)
--   [typedoc-plugin-merge-modules](https://github.com/krisztianb/typedoc-plugin-merge-modules)
--   [typedoc-plugin-remove-references](https://github.com/eyworldwide/typedoc-plugin-remove-references)
--   [typedoc-plugin-missing-exports](https://github.com/Gerrit0/typedoc-plugin-missing-exports) (With modifications)
+- [typedoc-plugin-mdn-links](https://github.com/Gerrit0/typedoc-plugin-mdn-links)
+- [typedoc-plugin-merge-modules](https://github.com/krisztianb/typedoc-plugin-merge-modules)
+- [typedoc-plugin-remove-references](https://github.com/eyworldwide/typedoc-plugin-remove-references)
+- [typedoc-plugin-missing-exports](https://github.com/Gerrit0/typedoc-plugin-missing-exports) (With modifications)
 
 [![Licence](https://img.shields.io/badge/AGPL--3.0_with_additional_terms-olivegreen?style=plastic&label=License&logo=open-source-initiative&logoColor=white&color=olivegreen)](https://github.com/gobstones/typedoc-theme-gobstones/blob/main/LICENSE) [![Version](https://img.shields.io/github/package-json/v/gobstones/typedoc-theme-gobstones?style=plastic&label=Version&logo=git-lfs&logoColor=white&color=crimson)](https://www.npmjs.com/package/@gobstones/typedoc-theme-gobstones)
 

@@ -10,9 +10,13 @@
  * You may read the full license at https://gobstones.github.io/gobstones-guidelines/LICENSE.
  * *****************************************************************************
  */
+
 /**
  * This module contains the components that are used when rendering the
  * different main sections of the page, such as the footer, header and breadcrumbs.
+ *
+ * @remarks
+ * These remain identical to their counterparts of the default theme, at least for now.
  *
  * @module Theme/Partials/Sections
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
@@ -21,5 +25,4 @@
  */
 
 export * from './breadcrumb';
-export * from './footer';
 export * from './header';

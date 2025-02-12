@@ -16,16 +16,8 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import {
-    DeclarationReflection,
-    DefaultThemeRenderContext,
-    JSX,
-    Reflection,
-    ReflectionKind,
-    ReflectionType
-} from 'typedoc';
-
-import { getKindClass, renderTypeParametersSignature } from '../../Utils/lib';
+import { DeclarationReflection, DefaultThemeRenderContext, JSX, Reflection, ReflectionKind } from 'typedoc';
+import { FormattedCodeBuilder, FormattedCodeGenerator, Wrap } from 'Utils';
 
 export const reflectionPreview = (context: DefaultThemeRenderContext, props: Reflection): JSX.Element | undefined => {
     if (!(props instanceof DeclarationReflection)) return;
@@ -34,14 +26,13 @@ export const reflectionPreview = (context: DefaultThemeRenderContext, props: Ref
     // a type-like object with links to each member. Don't do this if we don't have any children as it will
     // generate a broken looking interface. (See TraverseCallback)
     if (props.kindOf(ReflectionKind.Interface) && props.children) {
-        return (
-            <div class="tsd-signature">
-                <span class="tsd-signature-keyword">interface </span>
-                <span class={getKindClass(props)}>{props.name}</span>
-                {renderTypeParametersSignature(context, props.typeParameters)}{' '}
-                {context.type(new ReflectionType(props), { topLevelLinks: true })}
-            </div>
-        );
+        const builder = new FormattedCodeBuilder(context.urlTo);
+        const tree = builder.interface(props);
+        const generator = new FormattedCodeGenerator(context.options.getValue('typePrintWidth'));
+        generator.forceWrap(builder.forceWrap); // Ensure elements are added to new lines.
+        generator.node(tree, Wrap.Enable);
+
+        return <div class="tsd-signature">{generator.toElement()}</div>;
     }
     return undefined;
 };

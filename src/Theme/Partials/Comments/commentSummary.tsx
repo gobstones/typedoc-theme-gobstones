@@ -20,12 +20,17 @@ import { DefaultThemeRenderContext, JSX, Reflection } from 'typedoc';
 
 // Note: Comment modifiers are handled in `renderFlags`
 
-export const commentSummary = ({ markdown }: DefaultThemeRenderContext, props: Reflection): JSX.Element | undefined => {
-    if (!props.comment?.summary.some((part) => part.text)) return;
+export const commentSummary = (context: DefaultThemeRenderContext, props: Reflection): JSX.Element | undefined => {
+    if (props.comment?.summary.some((part) => part.text)) {
+        return context.displayParts?.(props.comment.summary);
+    }
 
-    return (
-        <div class="tsd-comment tsd-typography">
-            <JSX.Raw html={markdown(props.comment.summary)} />
-        </div>
-    );
+    const target =
+        (props.isDeclaration() || props.isParameter()) && props.type?.type === 'reference'
+            ? props.type.reflection
+            : undefined;
+
+    if (target?.comment?.hasModifier('@expand') && target?.comment?.summary.some((part) => part.text)) {
+        return context.displayParts?.(target.comment.summary);
+    }
 };

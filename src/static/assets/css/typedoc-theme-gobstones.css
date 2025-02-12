@@ -5,6 +5,8 @@
 :root,
 :root[data-theme='dark'] {
     --color-text-disabled: #8d96a0;
+    --color-text-private: #a28a8a;
+    --color-text-protected: #93937c;
     --color-accent-secondary: #f8444d;
     --tag-color-accent: #8d96a0;
     --tag-color-private: #a40009;
@@ -16,6 +18,8 @@
 
 :root[data-theme='light'] {
     --color-text-disabled: #636c76;
+    --color-text-private: #755a5a;
+    --color-text-protected: #777758;
     --color-accent-secondary: #f7232d;
     --tag-color-accent: #404040;
     --tag-color-private: #f9a3a8;
@@ -31,6 +35,16 @@ html {
 }
 .tsd-anchor {
     top: -55px;
+}
+
+/* Arrange sidebar margins */
+.col-sidebar .site-menu,
+.col-sidebar .page-menu .tsd-navigation.settings ,
+.col-content .tsd-panel.tsd-typography > h1.tsd-anchor-link:first-of-type {
+    margin-top: 0;
+}
+.col-content .tsd-panel.tsd-typography > h1.tsd-anchor-link:first-of-type {
+    padding-top: -0.3rem;
 }
 
 /* Add toolbar icon support */
@@ -140,9 +154,13 @@ html {
     opacity: 50%;
 }
 .tsd-is-private > .tsd-kind-icon ~ span,
-.tsd-is-private > .tsd-accordion-summary .tsd-kind-icon ~ span,
+.tsd-is-private > .tsd-accordion-summary .tsd-kind-icon ~ span {
+    color: var(--color-text-private);
+}
 .tsd-is-protected > .tsd-kind-icon ~ span,
-.tsd-is-protected > .tsd-accordion-summary .tsd-kind-icon ~ span,
+.tsd-is-protected > .tsd-accordion-summary .tsd-kind-icon ~ span {
+    color: var(--color-text-protected);
+}
 .tsd-is-internal > .tsd-kind-icon ~ span,
 .tsd-is-internal > .tsd-accordion-summary .tsd-kind-icon ~ span {
     color: var(--color-text-disabled);
@@ -151,6 +169,15 @@ html {
 /* Private remarks highlight */
 .tsd-private-remarks {
     color: var(--color-accent-secondary);
+}
+
+/* Inherited symbol before the element */
+.tsd-panel.tsd-member.tsd-is-inherited .tsd-anchor-link span:before,
+.tsd-accordion-details .tsd-is-inherited:before,
+.tsd-index-list .tsd-is-inherited:before {
+    content: '▲';
+    font-size: 80%;
+    margin-right: 0.3rem;
 }
 
 /* Code signatures */

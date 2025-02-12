@@ -18,17 +18,28 @@
 
 import { DefaultThemeRenderContext, JSX, Reflection, ReflectionKind } from 'typedoc';
 
-import { anchorIcon } from '../anchor-icon';
+import { anchorIcon } from '../Others/anchorIcon';
 
 export const commentTags = (context: DefaultThemeRenderContext, props: Reflection): JSX.Element | undefined => {
     if (!props.comment) return;
 
+    const skipSave = props.comment.blockTags.map((tag) => tag.skipRendering);
+
+    const skippedTags: `@${string}`[] = context.options.getValue('notRenderedTags');
     const beforeTags = context.hook('comment.beforeTags', context, props.comment, props);
     const afterTags = context.hook('comment.afterTags', context, props.comment, props);
 
     const tags = props.kindOf(ReflectionKind.SomeSignature)
-        ? props.comment.blockTags.filter((tag) => tag.tag !== '@returns' && !tag.skipRendering)
-        : props.comment.blockTags.filter((tag) => !tag.skipRendering);
+        ? props.comment.blockTags.filter(
+              (tag) => tag.tag !== '@returns' && !tag.skipRendering && !skippedTags.includes(tag.tag)
+          )
+        : props.comment.blockTags.filter((tag) => !tag.skipRendering && !skippedTags.includes(tag.tag));
+
+    skipSave.forEach((skip, i) => {
+        if (props.comment) {
+            props.comment.blockTags[i].skipRendering = skip;
+        }
+    });
 
     return (
         <>
@@ -39,16 +50,19 @@ export const commentTags = (context: DefaultThemeRenderContext, props: Reflectio
                         ? `${context.internationalization.translateTagName(item.tag)}: ${item.name}`
                         : context.internationalization.translateTagName(item.tag);
 
-                    const anchor = props.getUniqueAliasInPage(name);
+                    // const anchor = props.getUniqueAliasInPage(name);
+                    const anchor: string = context.slugger.slug(name);
 
                     return (
                         <>
-                            <h4 class="tsd-anchor-link">
-                                <a id={anchor} class="tsd-anchor"></a>
-                                {name}
-                                {anchorIcon(context, anchor)}
-                            </h4>
-                            <JSX.Raw html={context.markdown(item.content)} />
+                            <div class={`tsd-tag-${item.tag.substring(1)}`}>
+                                <h4 class="tsd-anchor-link">
+                                    <a id={anchor} class="tsd-anchor"></a>
+                                    {name}
+                                    {anchorIcon(context, anchor)}
+                                </h4>
+                                <JSX.Raw html={context.markdown(item.content)} />
+                            </div>
                         </>
                     );
                 })}

@@ -23,7 +23,6 @@ import {
     JSX,
     PageEvent,
     ReflectionKind,
-    ReflectionType,
     SignatureReflection
 } from 'typedoc';
 
@@ -50,6 +49,15 @@ export const reflectionTemplate = (
         return context.memberDeclaration(props.model);
     }
 
+    /*
+    if (
+        props.model.kindOf(ReflectionKind.ExportContainer) &&
+        (props.model.isDeclaration() || props.model.isProject())
+    ) {
+        return context.moduleReflection(props.model);
+    }
+    */
+
     return (
         <>
             {props.model.hasComment() && (
@@ -58,13 +66,6 @@ export const reflectionTemplate = (
                     {context.commentTags(props.model)}
                 </section>
             )}
-            {props.model instanceof DeclarationReflection &&
-                props.model.kind === ReflectionKind.Module &&
-                props.model.readme?.length && (
-                    <section class="tsd-panel tsd-typography">
-                        <JSX.Raw html={context.markdown(props.model.readme)} />
-                    </section>
-                )}
 
             {context.reflectionPreview(props.model)}
 
@@ -116,10 +117,11 @@ export const reflectionTemplate = (
 const renderIndexSignature = (context: DefaultThemeRenderContext, index: SignatureReflection): JSX.Element => (
     <li class="tsd-index-signature">
         <div class="tsd-signature">
+            {index.flags.isReadonly && <span class="tsd-signature-keyword">readonly </span>}
             <span class="tsd-signature-symbol">[</span>
             {index.parameters?.map((item) => (
                 <>
-                    <span class={getKindClass(item)}>{item.name}</span>:{context.type(item.type)}
+                    <span class={getKindClass(item)}>{item.name}</span>: {context.type(item.type)}
                 </>
             ))}
             <span class="tsd-signature-symbol">]: </span>
@@ -127,6 +129,6 @@ const renderIndexSignature = (context: DefaultThemeRenderContext, index: Signatu
         </div>
         {context.commentSummary(index)}
         {context.commentTags(index)}
-        {index.type instanceof ReflectionType && context.parameter(index.type.declaration)}
+        {context.typeDetailsIfUseful(index.type)}
     </li>
 );

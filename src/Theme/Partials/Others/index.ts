@@ -12,12 +12,20 @@
  */
 
 /**
- * This module contains the components that are used when rendering the toolbar.
+ * This module contains the components that are used when rendering other elements
+ * of the theme, such as reflection elements or anchors.
  *
- * @module Theme/Partials/Navigation/Toolbar
+ * @remarks
+ * These remain identical to their counterparts of the default theme, at least for now.
+ *
+ * @module Theme/Partials/Others
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  *
  * @internal
  */
 
-export * from './toolbar';
+export * from './anchorIcon';
+export * from './hierarchy';
+export * from './indexElement';
+export * from './moduleReflection';
+export * from './reflectionPreview';

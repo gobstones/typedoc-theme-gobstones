@@ -16,6 +16,8 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
+import path from 'path';
+
 import {
     DeclarationReflection,
     DefaultThemeRenderContext,
@@ -25,6 +27,55 @@ import {
     Reflection,
     RenderTemplate
 } from 'typedoc';
+
+/**
+ * Calculate the favicon file based on the extension.
+ *
+ * @param context The theme context.
+ * @returns The favicon component to use in the template.
+ */
+const favicon = (context: DefaultThemeRenderContext): JSX.Element | undefined => {
+    const fav = context.options.getValue('favicon');
+    if (!fav) return undefined;
+
+    switch (path.extname(fav)) {
+        case '.ico':
+            return <link rel="icon" href={context.relativeURL('assets/favicon.ico', true)} />;
+        case '.png':
+            return <link rel="icon" href={context.relativeURL('assets/favicon.png', true)} type="image/png" />;
+        case '.svg':
+            return <link rel="icon" href={context.relativeURL('assets/favicon.svg', true)} type="image/svg+xml" />;
+        default:
+            return undefined;
+    }
+};
+
+const buildSiteMetadata = (context: DefaultThemeRenderContext): JSX.Element | undefined => {
+    try {
+        // We have to know where we are hosted in order to generate this block
+        const url = new URL(context.options.getValue('hostedBaseUrl'));
+
+        // No point in generating this if we aren't the root page on the site
+        if (url.pathname !== '/') {
+            return undefined;
+        }
+
+        return (
+            <script type="application/ld+json">
+                <JSX.Raw
+                    html={JSON.stringify({
+                        '@context': 'https://schema.org',
+                        '@type': 'WebSite',
+                        name: context.page.project.name,
+                        url: url.toString()
+                    })}
+                />
+            </script>
+        );
+    } catch {
+        return undefined;
+    }
+};
 
 /**
  * The name to display as the main title of the documentation.
@@ -68,7 +119,7 @@ export const defaultLayout = (
     template: RenderTemplate<PageEvent<Reflection>>,
     props: PageEvent<Reflection>
 ): JSX.Element => (
-    <html class="default" lang={context.options.getValue('lang')}>
+    <html class="default" lang={context.options.getValue('lang')} data-base={context.relativeURL('./')}>
         <head>
             <meta charset="utf-8" />
             {context.hook('head.begin', context)}
@@ -78,10 +129,10 @@ export const defaultLayout = (
                     ? getDisplayName(props.model)
                     : `${getDisplayName(props.model)} | ${getDisplayName(props.project)}`}
             </title>
+            {favicon(context)}
+            {props.url === 'index.html' && buildSiteMetadata(context)}
             <meta name="description" content={'Documentation for ' + props.project.name} />
             <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-            <link rel="icon" type="image/x-icon" href={context.relativeURL('favicon.ico', true)} />
 
             <link rel="stylesheet" href={context.relativeURL('assets/css/style.css', true)} />
             <link rel="stylesheet" href={context.relativeURL('assets/css/highlight.css', true)} />

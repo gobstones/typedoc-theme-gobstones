@@ -34,30 +34,31 @@ const hasAnyLinkedReferenceType = (h: DeclarationHierarchy | undefined): boolean
 
 export const hierarchy = (
     context: DefaultThemeRenderContext,
-    props: DeclarationHierarchy | undefined
+    typeHierarchy: DeclarationHierarchy | undefined
 ): JSX.Element | undefined => {
-    if (!props) return;
+    if (!typeHierarchy) return;
 
-    const fullLink = hasAnyLinkedReferenceType(props) ? (
-        <>
-            {' '}
-            (
-            <a href={context.relativeURL('hierarchy.html') + '#' + context.page.model.getFullName()}>
-                {context.i18n.theme_hierarchy_view_full()}
-            </a>
-            )
-        </>
-    ) : (
-        <></>
-    );
+    const summaryLink =
+        context.options.getValue('includeHierarchySummary') && hasAnyLinkedReferenceType(typeHierarchy) ? (
+            <>
+                {' '}
+                (
+                <a href={context.relativeURL('hierarchy.html') + '#' + context.page.model.getFullName()}>
+                    {context.i18n.theme_hierarchy_view_summary()}
+                </a>
+                )
+            </>
+        ) : (
+            <></>
+        );
 
     return (
         <section class="tsd-panel tsd-hierarchy">
             <h4>
                 {context.i18n.theme_hierarchy()}
-                {fullLink}
+                {summaryLink}
             </h4>
-            {hierarchyList(context, props)}
+            {hierarchyList(context, typeHierarchy)}
         </section>
     );
 };

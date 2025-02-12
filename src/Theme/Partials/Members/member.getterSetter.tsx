@@ -23,7 +23,7 @@ import { classNames } from '../../../Utils/lib';
 
 export const memberGetterSetter = (context: DefaultThemeRenderContext, props: DeclarationReflection): JSX.Element => (
     <>
-        <div
+        <ul
             class={classNames(
                 {
                     'tsd-signatures': true
@@ -32,27 +32,21 @@ export const memberGetterSetter = (context: DefaultThemeRenderContext, props: De
             )}
         >
             {!!props.getSignature && (
-                <>
+                <li class={context.getReflectionClasses(props.getSignature as unknown as DeclarationReflection)}>
                     <div class="tsd-signature" id={props.getSignature.anchor}>
-                        <span class="tsd-signature-keyword">get</span> {props.name}
-                        {context.memberSignatureTitle(props.getSignature, {
-                            hideName: true
-                        })}
+                        {context.memberSignatureTitle(props.getSignature)}
                     </div>
                     <div class="tsd-description">{context.memberSignatureBody(props.getSignature)}</div>
-                </>
+                </li>
             )}
             {!!props.setSignature && (
-                <>
+                <li class={context.getReflectionClasses(props.setSignature as unknown as DeclarationReflection)}>
                     <div class="tsd-signature" id={props.setSignature.anchor}>
-                        <span class="tsd-signature-keyword">set</span> {props.name}
-                        {context.memberSignatureTitle(props.setSignature, {
-                            hideName: true
-                        })}
+                        {context.memberSignatureTitle(props.setSignature)}
                     </div>
                     <div class="tsd-description">{context.memberSignatureBody(props.setSignature)}</div>
-                </>
+                </li>
             )}
-        </div>
+        </ul>
     </>
 );

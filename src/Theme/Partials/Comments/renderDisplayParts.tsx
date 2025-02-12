@@ -12,12 +12,21 @@
  */
 
 /**
- * This module contains the components that are used when rendering the toolbar.
- *
- * @module Theme/Partials/Navigation/Toolbar
+ * @module Theme/Partials/Comments
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
- *
- * @internal
  */
 
-export * from './toolbar';
+import { CommentDisplayPart, DefaultThemeRenderContext, JSX } from 'typedoc';
+
+export const renderDisplayParts = (
+    { markdown }: DefaultThemeRenderContext,
+    parts: readonly CommentDisplayPart[] | undefined
+): JSX.Element | undefined => {
+    if (!parts?.length) return;
+
+    return (
+        <div class="tsd-comment tsd-typography">
+            <JSX.Raw html={markdown(parts)} />
+        </div>
+    );
+};

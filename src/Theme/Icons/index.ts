@@ -10,6 +10,7 @@
  * You may read the full license at https://gobstones.github.io/gobstones-guidelines/LICENSE.
  * *****************************************************************************
  */
+
 /**
  * This module returns utilities to build and return the icons
  * used through the application when presenting the different kinds
@@ -21,4 +22,6 @@
  * @internal
  */
 
-export * from './icon';
+export * from './icons';
+export * from './buildRefIcons';
+export * from './IconType';

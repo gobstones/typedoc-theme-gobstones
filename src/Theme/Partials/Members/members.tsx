@@ -21,7 +21,8 @@ import type {
     ContainerReflection,
     DeclarationReflection,
     DefaultThemeRenderContext,
-    DocumentReflection
+    DocumentReflection,
+    Reflection
 } from 'typedoc';
 
 export const filterMap = <T, U>(iter: Iterable<T> | undefined, fn: (item: T) => U | undefined): U[] => {
@@ -38,10 +39,13 @@ export const filterMap = <T, U>(iter: Iterable<T> | undefined, fn: (item: T) => 
 };
 
 const getMemberSections = (
-    parent: ContainerReflection
+    parent: ContainerReflection,
+    childFilter: (refl: Reflection) => boolean = () => true
 ): { title: string; children: (DocumentReflection | DeclarationReflection)[] }[] => {
     if (parent.categories?.length) {
         return filterMap(parent.categories, (cat) => {
+            const children = cat.children.filter(childFilter);
+            if (!children.length) return;
             if (!cat.allChildrenHaveOwnDocument()) {
                 return {
                     title: cat.title,
@@ -56,6 +60,8 @@ const getMemberSections = (
         return parent.groups.flatMap((group) => {
             if (group.categories?.length) {
                 return filterMap(group.categories, (cat) => {
+                    const children = cat.children.filter(childFilter);
+                    if (!children.length) return;
                     if (!cat.allChildrenHaveOwnDocument()) {
                         return {
                             title: `${group.title} - ${cat.title}`,
@@ -66,8 +72,11 @@ const getMemberSections = (
                 });
             }
 
+            const children = group.children.filter(childFilter);
+            if (!children.length) return [];
             return {
                 title: group.title,
+                description: group.description,
                 children: group.children.filter((child) => !child.hasOwnDocument)
             };
         });

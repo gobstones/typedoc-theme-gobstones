@@ -26,10 +26,4 @@ export * from './Members';
 export * from './Navigation';
 export * from './Sections';
 export * from './Types';
-
-export * from './anchor-icon';
-export * from './hierarchy';
-export * from '../Icons/icon';
-export * from './indexElement';
-export * from './parameter';
-export * from './reflectionPreview';
+export * from './Others';

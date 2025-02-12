@@ -17,10 +17,30 @@
  */
 
 import { JSX } from 'typedoc';
-import type { ContainerReflection, DefaultThemeRenderContext, ReflectionCategory, ReflectionGroup } from 'typedoc';
+import type {
+    ContainerReflection,
+    DefaultThemeRenderContext,
+    Reflection,
+    ReflectionCategory,
+    ReflectionGroup
+} from 'typedoc';
 
-import { classNames, renderName } from '../../Utils/lib';
+import { classNames, wbr } from '../../../Utils/lib';
 
+/**
+ * Renders the reflection name with an additional `?` if optional.
+ */
+export const renderName = (refl: Reflection): JSX.Element | (string | JSX.Element)[] => {
+    if (refl.flags.isOptional) {
+        return <>{wbr(refl.name)}?</>;
+    }
+
+    return wbr(refl.name);
+};
+
+/**
+ * Render the given category.
+ */
 const renderCategory = (
     { urlTo, icons, getReflectionClasses, markdown }: DefaultThemeRenderContext,
     item: ReflectionCategory | ReflectionGroup,

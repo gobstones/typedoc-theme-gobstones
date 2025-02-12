@@ -12,12 +12,22 @@
  */
 
 /**
- * This module contains the components that are used when rendering the toolbar.
- *
- * @module Theme/Partials/Navigation/Toolbar
+ * @module Theme/Partials/Types
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
- *
- * @internal
  */
 
-export * from './toolbar';
+import { DefaultThemeRenderContext, JSX, SomeType } from 'typedoc';
+
+import { renderingTypeDetailsIsUseful } from './typeDetailsIfUseful';
+
+export const typeDeclaration = (context: DefaultThemeRenderContext, type: SomeType): JSX.Element | undefined => {
+    if (renderingTypeDetailsIsUseful(type)) {
+        return (
+            <div class="tsd-type-declaration">
+                <h4>{context.i18n.theme_type_declaration()}</h4>
+                {context.typeDetails(type, true)}
+            </div>
+        );
+    }
+    return undefined;
+};

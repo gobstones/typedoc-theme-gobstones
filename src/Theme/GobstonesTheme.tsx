@@ -18,6 +18,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import url from 'url';
 
 import {
     DeclarationReflection,
@@ -26,6 +27,7 @@ import {
     DocumentReflection,
     PageEvent,
     Reflection,
+    Renderer,
     RendererEvent,
     SignatureReflection
 } from 'typedoc';
@@ -36,14 +38,14 @@ import { GobstonesThemeContext } from './GobstonesThemeContext';
  * This class represents the main element of the theme.
  * An instance of this class is automatically created by
  * TypeDoc when the theme is going to be used, and it's
- * `initialize` method called upon theme initialization.
+ * constructor method called upon theme initialization.
  *
  * @remarks
  * A Theme can be defined as a subclass of the built-in TypeDoc's
  * `Theme` class. Yet, it is most useful to re-use basic behavior by
  * extending the `DefaultTheme` class instead.
  * By extending this class, we should only overwrite methods that are
- * going to change from the default class, most likely the {@link initialize}
+ * going to change from the default class, most likely the {@link constructor}
  * method and the {@link getRenderContext} methods. By doing this we can also
  * have the benefit of accessing the currently running application through the
  * `this.application` property, allowing us to access different hooks.
@@ -55,10 +57,12 @@ export class GobstonesTheme extends DefaultTheme {
      * either at startup or at specific moments by using the application
      * hooks.
      */
-    public initialize(): void {
-        super.initialize();
+    public constructor(renderer: Renderer) {
+        super(renderer);
 
-        const staticResourceFolder = path.resolve(__dirname, path.join('..', 'static'));
+        const rootDir = typeof __dirname === 'undefined' ? path.dirname(url.fileURLToPath(import.meta.url)) : __dirname;
+        const staticResourceFolder = path.resolve(rootDir, 'static');
+
         // Triggered when all elements are ready at output folder
         this.application.renderer.on(RendererEvent.END, () => {
             // We are going to reorganize assets se they live in a proper
@@ -69,7 +73,9 @@ export class GobstonesTheme extends DefaultTheme {
             const assetsFolder = path.join(outputFolder, 'assets');
 
             // copy the assets from the theme to the output folder
-            fs.cpSync(staticResourceFolder, outputFolder, { recursive: true });
+            if (fs.existsSync(staticResourceFolder)) {
+                fs.cpSync(staticResourceFolder, outputFolder, { recursive: true });
+            }
 
             // ensure the three base folders for organization exist
             for (const folder of ['css', 'js', 'img']) {
@@ -102,7 +108,7 @@ export class GobstonesTheme extends DefaultTheme {
      * @returns The associated render context for this theme.
      */
     public getRenderContext(pageEvent: PageEvent<Reflection>): DefaultThemeRenderContext {
-        // The render controls the different components and files this
+        // The render context controls the different components and files this
         // theme is going to use.
         return new GobstonesThemeContext(this, pageEvent, this.application.options);
     }

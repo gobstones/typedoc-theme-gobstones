@@ -12,13 +12,15 @@
  */
 
 /**
+ * This module contains the components that are used when rendering the page footer.
+ *
  * @module Theme/Partials/Sections
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
 import { JSX } from 'typedoc';
 
-import type { GobstonesThemeContext } from '../../GobstonesThemeContext';
+import type { GobstonesThemeContext } from '../../../GobstonesThemeContext';
 
 export const footer = (context: GobstonesThemeContext): JSX.Element => {
     const hideGenerator = context.options.getValue('hideGenerator');

@@ -17,7 +17,7 @@
  */
 
 /* eslint-disable no-null/no-null */
-import { DefaultThemeRenderContext, JSX, ReflectionType, SignatureReflection } from 'typedoc';
+import { DefaultThemeRenderContext, JSX, SignatureReflection } from 'typedoc';
 
 import { hasTypeParameters } from '../../../Utils/lib';
 
@@ -30,6 +30,7 @@ export const memberSignatureBody = (
 
     return (
         <>
+            {context.reflectionFlags(props)}
             {context.commentSummary(props)}
 
             {hasTypeParameters(props) && context.typeParameters(props.typeParameters)}
@@ -42,6 +43,7 @@ export const memberSignatureBody = (
                             <li class="tsd-parameter-description">
                                 <div class="tsd-parameter-tags">{context.reflectionFlags(item)}</div>
                                 <span>
+                                    {context.reflectionFlags(item)}
                                     {!!item.flags.isRest && <span class="tsd-signature-symbol">...</span>}
                                     <span class="tsd-kind-parameter">{item.name}</span>
                                     {': '}
@@ -56,7 +58,7 @@ export const memberSignatureBody = (
                                 </span>
                                 {context.commentSummary(item)}
                                 {context.commentTags(item)}
-                                {item.type instanceof ReflectionType && context.parameter(item.type.declaration)}
+                                {context.typeDetailsIfUseful(item.type)}
                             </li>
                         ))}
                     </ul>
@@ -68,7 +70,7 @@ export const memberSignatureBody = (
                         {context.i18n.theme_returns()} {context.type(props.type)}
                     </h4>
                     {returnsTag && <JSX.Raw html={context.markdown(returnsTag.content)} />}
-                    {props.type instanceof ReflectionType && context.parameter(props.type.declaration)}
+                    {context.typeDetailsIfUseful(props.type)}
                 </>
             )}
 

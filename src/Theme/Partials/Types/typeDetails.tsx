@@ -12,12 +12,13 @@
  */
 
 /**
- * This module contains the components that are used when rendering the toolbar.
- *
- * @module Theme/Partials/Navigation/Toolbar
+ * @module Theme/Partials/Types
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
- *
- * @internal
  */
 
-export * from './toolbar';
+import { DefaultThemeRenderContext, JSX, SomeType } from 'typedoc';
+
+import { typeDetailsImpl } from './typeDetailsImpl';
+
+export const typeDetails = (context: DefaultThemeRenderContext, type: SomeType, renderAnchors: boolean): JSX.Children =>
+    typeDetailsImpl(context, type, renderAnchors);

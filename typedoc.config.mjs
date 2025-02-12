@@ -1,15 +1,18 @@
 export default {
-    entryPoints: ['./src'],
-    entryPointStrategy: 'expand',
+    // Configuration
     tsconfig: './tsconfig.json',
     compilerOptions: {
         rootDir: './src'
     },
-    out: './docs',
-    exclude: ['./node_modules/**/*', './**/*.test.ts', './src/index.ts'],
-    plugin: ['@gobstones/typedoc-theme-gobstones'],
-    theme: 'gobstones',
+    plugin: ['./dist/index.mjs'],
+    // Input
+    entryPoints: ['./src'],
+    // entryPointStrategy: 'expand',
+    // exclude: ['./node_modules/**/*', './**/*.test.ts', './src/index.ts'],
     excludeExternals: true,
     excludeInternal: false,
-    excludePrivate: false
+    excludePrivate: false,
+    // Output
+    out: './docs',
+    theme: 'gobstones'
 };

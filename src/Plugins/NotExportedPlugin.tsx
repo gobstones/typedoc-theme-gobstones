@@ -33,9 +33,8 @@ import {
     Reflection,
     ReflectionKind,
     TypeScript
-} from 'typedoc'; // version 0.20.16+
+} from 'typedoc';
 import { Context } from 'typedoc/dist/lib/converter/context';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import * as ts from 'typescript';
 
 import { TypedocPlugin } from '../Utils/Plugins';

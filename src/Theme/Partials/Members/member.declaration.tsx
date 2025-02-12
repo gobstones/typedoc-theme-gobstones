@@ -17,49 +17,36 @@
  */
 
 import { JSX } from 'typedoc';
-import type { DeclarationReflection, DefaultThemeRenderContext, ReflectionType } from 'typedoc';
+import type { DeclarationReflection, DefaultThemeRenderContext } from 'typedoc';
 
-import { getKindClass, hasTypeParameters, renderTypeParametersSignature, wbr } from '../../../Utils/lib';
-
-const renderingTypeDeclarationIsUseful = (declaration: DeclarationReflection): boolean => {
-    if (declaration.hasComment()) return true;
-    if (declaration.children?.some(renderingTypeDeclarationIsUseful)) return true;
-    if (declaration.type?.type === 'reflection' && renderingTypeDeclarationIsUseful(declaration.type.declaration)) {
-        return true;
-    }
-
-    return declaration
-        .getAllSignatures()
-        .some((sig) => sig.hasComment() || sig.parameters?.some((p) => p.hasComment()));
-};
+import { FormattedCodeBuilder, FormattedCodeGenerator, FormatterNode, Wrap, hasTypeParameters } from '../../../Utils';
 
 export const memberDeclaration = (context: DefaultThemeRenderContext, props: DeclarationReflection): JSX.Element => {
-    const renderTypeDeclaration = (type: ReflectionType): JSX.Element | undefined => {
-        if (renderingTypeDeclarationIsUseful(type.declaration)) {
-            return (
-                <div class="tsd-type-declaration">
-                    <h4>{context.i18n.theme_type_declaration()}</h4>
-                    {context.parameter(type.declaration)}
-                </div>
-            );
-        }
-        return undefined;
-    };
+    const builder = new FormattedCodeBuilder(context.urlTo);
+    const content: FormatterNode[] = [];
+    builder.member(content, props, { topLevelLinks: false });
+    const generator = new FormattedCodeGenerator(context.options.getValue('typePrintWidth'));
+    generator.node({ type: 'nodes', content }, Wrap.Detect);
 
-    const visitor = { reflection: renderTypeDeclaration };
+    /** Fix for #2717. If type is the same as value the default value is omitted */
+    const shouldRenderDefaultValue = (): boolean => {
+        if (props.type && props.type.type === 'literal') {
+            const reflectionTypeString = props.type.toString();
+
+            const defaultValue = props.defaultValue;
+
+            if (defaultValue === undefined || reflectionTypeString === defaultValue.toString()) {
+                return false;
+            }
+        }
+        return true;
+    };
 
     return (
         <>
             <div class="tsd-signature">
-                <span class={getKindClass(props)}>{wbr(props.name)}</span>
-                {renderTypeParametersSignature(context, props.typeParameters)}
-                {props.type && (
-                    <>
-                        <span class="tsd-signature-symbol">{!!props.flags.isOptional && '?'}:</span>{' '}
-                        {context.type(props.type)}
-                    </>
-                )}
-                {!!props.defaultValue && (
+                {generator.toElement()}
+                {!!props.defaultValue && shouldRenderDefaultValue() && (
                     <>
                         <span class="tsd-signature-symbol">
                             {' = '}
@@ -73,29 +60,7 @@ export const memberDeclaration = (context: DefaultThemeRenderContext, props: Dec
 
             {hasTypeParameters(props) && context.typeParameters(props.typeParameters)}
 
-            {props.type?.visit<JSX.Children>({
-                reflection: renderTypeDeclaration,
-                array: (arr) => arr.elementType.visit(visitor),
-                intersection: (int) => int.types.map((t) => t.visit(visitor)),
-                union: (union) => {
-                    if (union.elementSummaries) {
-                        const result: JSX.Children = [];
-                        for (let i = 0; i < union.types.length; ++i) {
-                            result.push(
-                                <li>
-                                    {context.type(union.types[i])}
-                                    <JSX.Raw html={context.markdown(union.elementSummaries[i])} />
-                                    {union.types[i].visit(visitor)}
-                                </li>
-                            );
-                        }
-                        return <ul>{result}</ul>;
-                    }
-                    return union.types.map((t) => t.visit(visitor));
-                },
-                reference: (ref) => ref.typeArguments?.map((t) => t.visit(visitor)),
-                tuple: (ref) => ref.elements.map((t) => t.visit(visitor))
-            })}
+            {props.type && context.typeDeclaration(props.type)}
 
             {context.commentTags(props)}
 

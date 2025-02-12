@@ -10,9 +10,15 @@
  * You may read the full license at https://gobstones.github.io/gobstones-guidelines/LICENSE.
  * *****************************************************************************
  */
+
 /**
  * This module contains the components that are used when rendering the different
  * navigation elements of the page.
+ *
+ * @remarks
+ * In these elements, the page sidebar elements, the settings, and also the toolbar
+ * have been changed compared to their counterparts of the default theme. The remaining
+ * element are still identical to their counterparts.
  *
  * @module Theme/Partials/Navigation
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
@@ -23,3 +29,4 @@
 export * from './PageSidebar';
 export * from './Sidebar';
 export * from './Toolbar';
+export * from './Footer';

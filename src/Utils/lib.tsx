@@ -18,7 +18,6 @@
 
 import {
     DeclarationReflection,
-    DefaultThemeRenderContext,
     JSX,
     ProjectReflection,
     ReferenceReflection,
@@ -29,20 +28,23 @@ import {
 } from 'typedoc';
 
 /**
- * Turn any element into it's string form.
+ * A helper function that both filters and transforms elements in an array.
  */
-export const stringify = (data: unknown): string => {
-    if (typeof data === 'bigint') {
-        return data.toString() + 'n';
+export const filterMap = <T, U>(iter: Iterable<T> | undefined, fn: (item: T) => U | undefined): U[] => {
+    const result: U[] = [];
+
+    for (const item of iter || []) {
+        const newItem = fn(item);
+        if (newItem !== undefined) {
+            result.push(newItem);
+        }
     }
-    return JSON.stringify(data);
+
+    return result;
 };
 
 /**
  * Get the full package name.
- *
- * @param refl
- * @returns
  */
 export const getDisplayName = (refl: Reflection): string => {
     let version = '';
@@ -53,9 +55,9 @@ export const getDisplayName = (refl: Reflection): string => {
     return `${refl.name}${version}`;
 };
 
-export const toStyleClass = (str: string): string =>
-    str.replace(/(\w)([A-Z])/g, (_m, m1: string, m2: string) => m1 + '-' + m2).toLowerCase();
-
+/**
+ * Get the kind of a reflection.
+ */
 export const getKindClass = (refl: Reflection): string => {
     if (refl instanceof ReferenceReflection) {
         return getKindClass(refl.getTargetReflectionDeep());
@@ -86,6 +88,9 @@ export const wbr = (str: string): (string | JSX.Element)[] => {
     return ret;
 };
 
+/**
+ * Join all the elements.
+ */
 export const join = <T,>(joiner: JSX.Children, list: readonly T[], cb: (x: T) => JSX.Children): JSX.Element => {
     const result: JSX.Children = [];
 
@@ -99,6 +104,9 @@ export const join = <T,>(joiner: JSX.Children, list: readonly T[], cb: (x: T) =>
     return <>{result}</>;
 };
 
+/**
+ * Return the class names for css of the given names.
+ */
 export const classNames = (
     names: Record<string, boolean | null | undefined>,
     extraCss?: string
@@ -112,6 +120,9 @@ export const classNames = (
     return css.length ? css : undefined;
 };
 
+/**
+ * Answer if the given reflection has type parameters.
+ */
 export const hasTypeParameters = (
     reflection: Reflection
 ): reflection is Reflection & { typeParameters: TypeParameterReflection[] } =>
@@ -121,88 +132,65 @@ export const hasTypeParameters = (
     reflection.typeParameters !== null &&
     reflection.typeParameters.length > 0;
 
-export const renderTypeParametersSignature = (
-    context: DefaultThemeRenderContext,
-    typeParameters: readonly TypeParameterReflection[] | undefined
-): JSX.Element => {
-    if (!typeParameters || typeParameters.length === 0) return <></>;
-    const hideParamTypes = context.options.getValue('hideParameterTypesInTitle');
-
-    if (hideParamTypes) {
-        return (
-            <>
-                <span class="tsd-signature-symbol">{'<'}</span>
-                {join(<span class="tsd-signature-symbol">{', '}</span>, typeParameters, (item) => (
-                    <>
-                        {item.flags.isConst && <span class="tsd-signature-keyword">const </span>}
-                        {item.varianceModifier ? `${item.varianceModifier} ` : ''}
-                        <a class="tsd-signature-type tsd-kind-type-parameter" href={context.urlTo(item)}>
-                            {item.name}
-                        </a>
-                    </>
-                ))}
-                <span class="tsd-signature-symbol">{'>'}</span>
-            </>
-        );
+export class DefaultMap<K, V> extends Map<K, V> {
+    public constructor(private creator: (key: K) => V) {
+        super();
     }
 
-    return (
-        <>
-            <span class="tsd-signature-symbol">{'<'}</span>
-            {join(<span class="tsd-signature-symbol">{', '}</span>, typeParameters, (item) => (
-                <>
-                    {item.flags.isConst && 'const '}
-                    {item.varianceModifier ? `${item.varianceModifier} ` : ''}
-                    <span class="tsd-signature-type tsd-kind-type-parameter">{item.name}</span>
-                    {!!item.type && (
-                        <>
-                            <span class="tsd-signature-keyword"> extends </span>
-                            {context.type(item.type)}
-                        </>
-                    )}
-                </>
-            ))}
-            <span class="tsd-signature-symbol">{'>'}</span>
-        </>
-    );
+    public override get(key: K): V {
+        const saved = super.get(key);
+        // eslint-disable-next-line no-null/no-null
+        if (saved != null) {
+            return saved;
+        }
+
+        const created = this.creator(key);
+        this.set(key, created);
+        return created;
+    }
+
+    public getNoInsert(key: K): V | undefined {
+        return super.get(key);
+    }
+}
+
+const nameCollisionCache = new WeakMap<ProjectReflection, DefaultMap<string, number>>();
+const getNameCollisionCount = (project: ProjectReflection, name: string): number => {
+    let collisions = nameCollisionCache.get(project);
+    if (collisions === undefined) {
+        collisions = new DefaultMap(() => 0);
+        for (const reflection of project.getReflectionsByKind(ReflectionKind.SomeExport)) {
+            collisions.set(reflection.name, collisions.get(reflection.name) + 1);
+        }
+        nameCollisionCache.set(project, collisions);
+    }
+    return collisions.get(name);
+};
+
+const getNamespacedPath = (reflection: Reflection): Reflection[] => {
+    const path = [reflection];
+    let parent = reflection.parent;
+    while (parent?.kindOf(ReflectionKind.Namespace)) {
+        path.unshift(parent);
+        parent = parent.parent;
+    }
+    return path;
 };
 
 /**
- * Renders the reflection name with an additional `?` if optional.
+ * Returns a (hopefully) globally unique path for the given reflection.
+ *
+ * This only works for exportable symbols, so e.g. methods are not affected by this.
+ *
+ * If the given reflection has a globally unique name already, then it will be returned as is. If the name is
+ * ambiguous (i.e. there are two classes with the same name in different namespaces), then the namespaces path of the
+ * reflection will be returned.
  */
-export const renderName = (refl: Reflection): JSX.Element | (string | JSX.Element)[] => {
-    if (refl.flags.isOptional) {
-        return <>{wbr(refl.name)}?</>;
+export const getUniquePath = (reflection: Reflection): Reflection[] => {
+    if (reflection.kindOf(ReflectionKind.SomeExport)) {
+        if (getNameCollisionCount(reflection.project, reflection.name) >= 2) {
+            return getNamespacedPath(reflection);
+        }
     }
-
-    return wbr(refl.name);
-};
-
-export const getHierarchyRoots = (project: ProjectReflection): DeclarationReflection[] => {
-    const allClasses = project.getReflectionsByKind(ReflectionKind.ClassOrInterface) as DeclarationReflection[];
-
-    const roots = allClasses.filter((refl) => {
-        // If nobody extends this class, there's no possible hierarchy to display.
-        if (!refl.implementedBy && !refl.extendedBy) {
-            return false;
-        }
-
-        // If we don't extend anything, then we are a root
-        if (!refl.implementedTypes && !refl.extendedTypes) {
-            return true;
-        }
-
-        // We might still be a root, if our extended/implemented types are not included
-        // in the documentation.
-        const types = [...(refl.implementedTypes || []), ...(refl.extendedTypes || [])];
-
-        return types.every(
-            (type) =>
-                !type.visit({
-                    reference: (ref) => ref.reflection !== undefined
-                })
-        );
-    });
-
-    return roots.sort((a, b) => a.name.localeCompare(b.name));
+    return [reflection];
 };
