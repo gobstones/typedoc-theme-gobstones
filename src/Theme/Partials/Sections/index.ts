@@ -24,5 +24,5 @@
  * @internal
  */
 
-export * from './breadcrumb';
+export * from './breadcrumbs';
 export * from './header';

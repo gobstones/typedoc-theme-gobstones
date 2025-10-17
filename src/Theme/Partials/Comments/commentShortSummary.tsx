@@ -16,9 +16,11 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import { CommentDisplayPart, DefaultThemeRenderContext, JSX, Reflection } from 'typedoc';
+import { CommentDisplayPart, JSX, Reflection } from 'typedoc';
 
-export const commentShortSummary = (context: DefaultThemeRenderContext, props: Reflection): JSX.Element | undefined => {
+import type { TypedocRendererContext } from '../../../Wrappers';
+
+export const commentShortSummary = (context: TypedocRendererContext, props: Reflection): JSX.Element | undefined => {
     let shortSummary: readonly CommentDisplayPart[] | undefined;
     if (props.isDocument()) {
         if (typeof props.frontmatter.summary === 'string') {

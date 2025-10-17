@@ -12,12 +12,15 @@
  */
 
 /**
- * @module Utils/lib
+ * @module Theme/Utils
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
 import {
+    CommentDisplayPart,
+    ContainerReflection,
     DeclarationReflection,
+    DocumentReflection,
     JSX,
     ProjectReflection,
     ReferenceReflection,
@@ -194,3 +197,57 @@ export const getUniquePath = (reflection: Reflection): Reflection[] => {
     }
     return [reflection];
 };
+
+export interface MemberSection {
+    title: string;
+    description?: CommentDisplayPart[];
+    children: (DocumentReflection | DeclarationReflection)[];
+}
+
+/**
+ * Get the members of a container reflection.
+ */
+export const getMemberSections = (
+    parent: ContainerReflection,
+    childFilter: (refl: Reflection) => boolean = () => true
+): MemberSection[] => {
+    if (parent.categories?.length) {
+        return filterMap(parent.categories, (cat) => {
+            const children = cat.children.filter(childFilter);
+            if (!children.length) return;
+            return {
+                title: cat.title,
+                description: cat.description,
+                children
+            };
+        });
+    }
+
+    if (parent.groups?.length) {
+        return parent.groups.flatMap((group) => {
+            if (group.categories?.length) {
+                return filterMap(group.categories, (cat) => {
+                    const children = cat.children.filter(childFilter);
+                    if (!children.length) return;
+                    return {
+                        title: `${group.title} - ${cat.title}`,
+                        description: cat.description,
+                        children
+                    };
+                });
+            }
+
+            const children = group.children.filter(childFilter);
+            if (!children.length) return [];
+            return {
+                title: group.title,
+                description: group.description,
+                children
+            };
+        });
+    }
+
+    return [];
+};
+
+export const isNoneSection = (section: MemberSection): boolean => section.title.toLocaleLowerCase() === 'none';

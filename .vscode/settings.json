@@ -1,6 +1,6 @@
 {
     // CSpell
-    "cSpell.words": [],
+    "cSpell.words": ["czrc"],
     // Node and npm configuration
     "npm.autoDetect": "on",
     "debug.node.autoAttach": "never",

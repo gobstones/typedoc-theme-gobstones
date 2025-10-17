@@ -12,21 +12,23 @@
  */
 
 /**
- * @module Theme/Partials
+ * @module Theme/Partials/Others
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import { DeclarationReflection, DefaultThemeRenderContext, JSX, Reflection, ReflectionKind } from 'typedoc';
-import { FormattedCodeBuilder, FormattedCodeGenerator, Wrap } from 'Utils';
+import { DeclarationReflection, JSX, Reflection, ReflectionKind } from 'typedoc';
 
-export const reflectionPreview = (context: DefaultThemeRenderContext, props: Reflection): JSX.Element | undefined => {
+import type { TypedocRendererContext } from '../../../Wrappers';
+import { FormattedCodeBuilder, FormattedCodeGenerator, Wrap } from '../../Utils';
+
+export const reflectionPreview = (context: TypedocRendererContext, props: Reflection): JSX.Element | undefined => {
     if (!(props instanceof DeclarationReflection)) return;
 
     // Each property of the interface will have a member rendered later on the page describing it, so generate
     // a type-like object with links to each member. Don't do this if we don't have any children as it will
     // generate a broken looking interface. (See TraverseCallback)
     if (props.kindOf(ReflectionKind.Interface) && props.children) {
-        const builder = new FormattedCodeBuilder(context.urlTo);
+        const builder = new FormattedCodeBuilder(context.router, context.model);
         const tree = builder.interface(props);
         const generator = new FormattedCodeGenerator(context.options.getValue('typePrintWidth'));
         generator.forceWrap(builder.forceWrap); // Ensure elements are added to new lines.

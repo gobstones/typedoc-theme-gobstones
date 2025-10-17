@@ -12,20 +12,16 @@
  */
 
 /**
- * @module Theme/Partials
+ * @module Theme/Partials/Others
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
 import { JSX } from 'typedoc';
-import type {
-    ContainerReflection,
-    DefaultThemeRenderContext,
-    Reflection,
-    ReflectionCategory,
-    ReflectionGroup
-} from 'typedoc';
+import type { ContainerReflection, Reflection } from 'typedoc';
 
-import { classNames, wbr } from '../../../Utils/lib';
+import { i18n } from '../../../Strings';
+import type { TypedocRendererContext } from '../../../Wrappers';
+import { MemberSection, classNames, getMemberSections, isNoneSection, wbr } from '../../Utils';
 
 /**
  * Renders the reflection name with an additional `?` if optional.
@@ -38,33 +34,29 @@ export const renderName = (refl: Reflection): JSX.Element | (string | JSX.Elemen
     return wbr(refl.name);
 };
 
-/**
- * Render the given category.
- */
-const renderCategory = (
-    { urlTo, icons, getReflectionClasses, markdown }: DefaultThemeRenderContext,
-    item: ReflectionCategory | ReflectionGroup,
-    prependName = ''
+const renderSection = (
+    { urlTo, reflectionIcon, getReflectionClasses, markdown }: TypedocRendererContext,
+    item: MemberSection
 ): JSX.Element => (
     <section class="tsd-index-section">
-        <h3 class="tsd-index-heading">{prependName ? `${prependName} - ${item.title}` : item.title}</h3>
+        {!isNoneSection(item) && <h3 class="tsd-index-heading">{item.title}</h3>}
         {item.description && (
             <div class="tsd-comment tsd-typography">
                 <JSX.Raw html={markdown(item.description)} />
             </div>
         )}
         <div class="tsd-index-list">
-            {item.children.map((i) => (
+            {item.children.map((it) => (
                 <>
                     <a
-                        href={urlTo(i)}
+                        href={urlTo(it)}
                         class={classNames(
-                            { 'tsd-index-link': true, deprecated: i.isDeprecated() },
-                            getReflectionClasses(i)
+                            { 'tsd-index-link': true, deprecated: it.isDeprecated() },
+                            getReflectionClasses(it)
                         )}
                     >
-                        {icons[i.kind]()}
-                        <span>{renderName(i)}</span>
+                        {reflectionIcon(it)}
+                        <span>{renderName(it)}</span>
                     </a>
                     {'\n'}
                 </>
@@ -73,48 +65,21 @@ const renderCategory = (
     </section>
 );
 
-export const index = (context: DefaultThemeRenderContext, props: ContainerReflection): JSX.Element => {
-    let content: JSX.Element | JSX.Element[] = [];
-
-    if (props.categories?.length) {
-        content = props.categories.map((item) => renderCategory(context, item));
-    } else if (props.groups?.length) {
-        content = props.groups.flatMap((item) =>
-            item.categories
-                ? item.categories.map((item2) => renderCategory(context, item2, item.title))
-                : renderCategory(context, item)
-        );
-    }
-
-    // Accordion is only needed if any children don't have their own document.
-    if (
-        [...(props.groups ?? []), ...(props.categories ?? [])].some(
-            (category) => !category.allChildrenHaveOwnDocument()
-        )
-    ) {
-        content = (
-            <details class="tsd-index-content tsd-accordion" open={true}>
-                <summary class="tsd-accordion-summary tsd-index-summary">
-                    <h5 class="tsd-index-heading uppercase" role="button" aria-expanded="false" tabIndex={0}>
-                        {context.icons.chevronSmall()} {context.i18n.theme_index()}
-                    </h5>
-                </summary>
-                <div class="tsd-accordion-details">{content}</div>
-            </details>
-        );
-    } else {
-        content = (
-            <>
-                <h3 class="tsd-index-heading uppercase">{context.i18n.theme_index()}</h3>
-                {content}
-            </>
-        );
-    }
+export const index = (context: TypedocRendererContext, props: ContainerReflection): JSX.Element => {
+    const sections = getMemberSections(props);
 
     return (
         <>
             <section class="tsd-panel-group tsd-index-group">
-                <section class="tsd-panel tsd-index-panel">{content}</section>
+                <section class="tsd-panel tsd-index-panel">
+                    <details class="tsd-index-content tsd-accordion" open={true}>
+                        <summary class="tsd-accordion-summary tsd-index-summary">
+                            {context.icons.chevronDown()}
+                            <h5 class="tsd-index-heading uppercase">{i18n.theme_index()}</h5>
+                        </summary>
+                        <div class="tsd-accordion-details">{sections.map((s) => renderSection(context, s))}</div>
+                    </details>
+                </section>
             </section>
         </>
     );

@@ -16,11 +16,13 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import { DefaultThemeRenderContext, JSX, PageEvent, Reflection, ReflectionKind } from 'typedoc';
+import { JSX, PageEvent, Reflection, ReflectionKind } from 'typedoc';
 
-import { classNames } from '../../../../Utils/lib';
+import { i18n } from '../../../../Strings';
+import type { TypedocRendererContext } from '../../../../Wrappers';
+import { classNames } from '../../../Utils';
 
-export const navigation = (context: DefaultThemeRenderContext, props: PageEvent<Reflection>): JSX.Element => (
+export const navigation = (context: TypedocRendererContext, props: PageEvent<Reflection>): JSX.Element => (
     <nav class="tsd-navigation">
         <a
             href={context.options.getValue('titleLink') || context.relativeURL('index.html')}
@@ -30,7 +32,7 @@ export const navigation = (context: DefaultThemeRenderContext, props: PageEvent<
             <span>Overview</span>
         </a>
         <ul class="tsd-small-nested-navigation" id="tsd-nav-container" data-base={context.relativeURL('./')}>
-            <li>{context.i18n.theme_loading()}</li>
+            <li>{i18n.theme_loading()}</li>
         </ul>
     </nav>
 );

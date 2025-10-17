@@ -12,7 +12,7 @@
  */
 
 /**
- * @module Theme/Partials
+ * @module Theme/Partials/Others
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
@@ -20,17 +20,19 @@ import {
     CommentDisplayPart,
     ContainerReflection,
     DeclarationReflection,
-    DefaultThemeRenderContext,
     DocumentReflection,
     JSX,
     ProjectReflection,
     ReferenceReflection,
     Reflection,
+    ReflectionCategory,
     ReflectionKind
 } from 'typedoc';
-import { classNames, filterMap, getDisplayName, getUniquePath, join } from 'Utils';
 
 import { anchorIcon } from './anchorIcon';
+
+import type { TypedocRendererContext } from '../../../Wrappers';
+import { classNames, filterMap, getDisplayName, getUniquePath, join } from '../../Utils';
 
 export interface MemberSections {
     title: string;
@@ -46,7 +48,7 @@ export const getMemberSections = (
     childFilter: (refl: Reflection) => boolean = () => true
 ): MemberSections[] => {
     if (parent.categories?.length) {
-        return filterMap(parent.categories, (cat) => {
+        return filterMap(parent.categories, (cat: ReflectionCategory) => {
             const children = cat.children.filter(childFilter);
             if (!children.length) return;
             return {
@@ -60,7 +62,7 @@ export const getMemberSections = (
     if (parent.groups?.length) {
         return parent.groups.flatMap((group) => {
             if (group.categories?.length) {
-                return filterMap(group.categories, (cat) => {
+                return filterMap(group.categories, (cat: ReflectionCategory) => {
                     const children = cat.children.filter(childFilter);
                     if (!children.length) return;
                     return {
@@ -85,7 +87,7 @@ export const getMemberSections = (
 };
 
 export const moduleReflection = (
-    context: DefaultThemeRenderContext,
+    context: TypedocRendererContext,
     mod: DeclarationReflection | ProjectReflection
 ): JSX.Element => {
     const sections = getMemberSections(mod);
@@ -131,7 +133,7 @@ export const moduleReflection = (
 };
 
 export const moduleMemberSummary = (
-    context: DefaultThemeRenderContext,
+    context: TypedocRendererContext,
     member: DeclarationReflection | DocumentReflection
 ): JSX.Element => {
     const id = context.slugger.slug(member.name);
@@ -182,8 +184,8 @@ export const moduleMemberSummary = (
 
 // Note: This version of uniqueName does NOT include colors... they looked weird to me
 // when looking at a module page.
-const uniqueName = (context: DefaultThemeRenderContext, reflection: Reflection): JSX.Element => {
-    const name = join('.', getUniquePath(reflection), (item) => (
+const uniqueName = (context: TypedocRendererContext, reflection: Reflection): JSX.Element => {
+    const name = join('.', getUniquePath(reflection), (item: Reflection) => (
         <a href={context.urlTo(item)} class={classNames({ deprecated: item.isDeprecated() })}>
             {item.name}
         </a>

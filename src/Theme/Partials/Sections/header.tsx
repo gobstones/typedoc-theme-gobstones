@@ -16,11 +16,12 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import { DefaultThemeRenderContext, JSX, PageEvent, Reflection } from 'typedoc';
+import { JSX, PageEvent, Reflection, ReflectionKind } from 'typedoc';
 
-import { classNames, getDisplayName, hasTypeParameters, join } from '../../../Utils/lib';
+import type { TypedocRendererContext } from '../../../Wrappers';
+import { classNames, getDisplayName, hasTypeParameters, join } from '../../Utils';
 
-export const header = (context: DefaultThemeRenderContext, props: PageEvent<Reflection>): JSX.Element => {
+export const header = (context: TypedocRendererContext, props: PageEvent<Reflection>): JSX.Element => {
     const opts: {
         readme: boolean;
         document: boolean;
@@ -45,12 +46,12 @@ export const header = (context: DefaultThemeRenderContext, props: PageEvent<Refl
         renderTitle = opts.document;
     } else {
         renderTitle = true;
-        titleKindString = context.internationalization.kindSingularString(props.model.kind) + ' ';
+        titleKindString = ReflectionKind.singularString(props.model.kind) + ' ';
     }
 
     return (
         <div class="tsd-page-title">
-            {renderBreadcrumbs && <ul class="tsd-breadcrumb">{context.breadcrumb(props.model)}</ul>}
+            {renderBreadcrumbs && <ul class="tsd-breadcrumb">{context.breadcrumbs(props.model)}</ul>}
             {renderTitle && (
                 <h1 class={classNames({ deprecated: props.model.isDeprecated() })}>
                     {titleKindString}

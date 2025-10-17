@@ -16,18 +16,22 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import type { DefaultThemeRenderContext, TypeParameterReflection } from 'typedoc';
+import type { TypeParameterReflection } from 'typedoc';
 import { JSX } from 'typedoc';
 
-export const typeParameters = (context: DefaultThemeRenderContext, params: TypeParameterReflection[]): JSX.Element => (
+import { i18n } from '../../../Strings';
+import type { TypedocRendererContext } from '../../../Wrappers';
+import { anchorTargetIfPresent } from '../Others/anchorIcon';
+
+export const typeParameters = (context: TypedocRendererContext, params: TypeParameterReflection[]): JSX.Element => (
     <>
         <section class="tsd-panel">
-            <h4>{context.i18n.kind_plural_type_parameter()}</h4>
+            <h4>{i18n.kind_plural_type_parameter()}</h4>
             <ul class="tsd-type-parameter-list">
                 {params.map((item) => (
                     <li>
                         <span>
-                            <a id={item.anchor} class="tsd-anchor"></a>
+                            <a id={anchorTargetIfPresent(context, item)} class="tsd-anchor"></a>
                             {item.flags.isConst && <span class="tsd-signature-keyword">const </span>}
                             {item.varianceModifier && (
                                 <span class="tsd-signature-keyword">{item.varianceModifier} </span>

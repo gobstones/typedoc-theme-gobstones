@@ -16,9 +16,11 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import { DefaultThemeRenderContext, JSX } from 'typedoc';
+import { JSX } from 'typedoc';
 
-export const sidebarLinks = (context: DefaultThemeRenderContext): JSX.Element | null => {
+import type { TypedocRendererContext } from '../../../../Wrappers';
+
+export const sidebarLinks = (context: TypedocRendererContext): JSX.Element | null => {
     const links = Object.entries(context.options.getValue('sidebarLinks'));
     const navLinks = Object.entries(context.options.getValue('navigationLinks'));
 

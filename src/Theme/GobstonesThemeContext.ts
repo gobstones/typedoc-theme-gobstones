@@ -22,7 +22,6 @@ import {
     DeclarationHierarchy,
     DeclarationReflection,
     DefaultTheme,
-    DefaultThemeRenderContext,
     DocumentReflection,
     JSX,
     Options,
@@ -30,6 +29,7 @@ import {
     ProjectReflection,
     Reflection,
     RenderTemplate,
+    Router,
     SignatureReflection,
     SomeType,
     Type,
@@ -39,7 +39,7 @@ import {
 import { IconRecord, buildRefIcons } from './Icons';
 import { defaultLayout as _defaultLayout } from './Layouts';
 import {
-    breadcrumb as _breadcrumb,
+    breadcrumbs as _breadcrumb,
     commentShortSummary as _commentShortSummary,
     commentSummary as _commentSummary,
     commentTags as _commentTags,
@@ -80,6 +80,8 @@ import {
     reflectionTemplate as _reflectionTemplate
 } from './Templates';
 
+import { TypedocRendererContext } from '../Wrappers';
+
 /**
  * Return a partially applied version of the given function, such that
  * the first argument will be the given `first` element.
@@ -100,7 +102,7 @@ const bind =
  * that is, how it will render every part of the theme depending on
  * the reflection to render.
  */
-export class GobstonesThemeContext extends DefaultThemeRenderContext {
+export class GobstonesThemeContext extends TypedocRendererContext {
     // Custom Icons
     // ------------
     // This is required so that icons can be returned based on
@@ -154,7 +156,7 @@ export class GobstonesThemeContext extends DefaultThemeRenderContext {
     // The main content of a page has not change from Typedoc's
     // default theme, so there is no need for this assignments truly
     public override header: (props: PageEvent<Reflection>) => JSX.Element = bind(_header, this);
-    public override breadcrumb: (props: Reflection) => JSX.Element | undefined = bind(_breadcrumb, this);
+    public override breadcrumbs: (props: Reflection) => JSX.Element = bind(_breadcrumb, this);
 
     // Comments (Main Content)
     // -----------------------
@@ -184,12 +186,19 @@ export class GobstonesThemeContext extends DefaultThemeRenderContext {
         _typeParameters,
         this
     );
-    public override typeDetails: (props: SomeType, renderAnchors: boolean) => JSX.Children = bind(_typeDetails, this);
-    public override typeDetailsIfUseful: (props: SomeType | undefined) => JSX.Children = bind(
-        _typeDetailsIfUseful,
+    public override typeDetails: (
+        reflectionOwningType: Reflection,
+        props: SomeType,
+        renderAnchors: boolean
+    ) => JSX.Children = bind(_typeDetails, this);
+    public override typeDetailsIfUseful: (
+        reflectionOwningType: Reflection,
+        props: SomeType | undefined
+    ) => JSX.Children = bind(_typeDetailsIfUseful, this);
+    public override typeDeclaration: (reflectionOwningType: Reflection, props: SomeType) => JSX.Children = bind(
+        _typeDeclaration,
         this
     );
-    public override typeDeclaration: (props: SomeType) => JSX.Children = bind(_typeDeclaration, this);
 
     // Members
     // -------
@@ -235,11 +244,12 @@ export class GobstonesThemeContext extends DefaultThemeRenderContext {
     public override index: (props: ContainerReflection) => JSX.Element = bind(_index, this);
 
     public constructor(
+        router: Router,
         public readonly theme: DefaultTheme,
         public page: PageEvent<Reflection>,
         options: Options
     ) {
-        super(theme, page, options);
+        super(router, theme, page, options);
         this._customRefIcons = buildRefIcons(theme.icons, this);
     }
 

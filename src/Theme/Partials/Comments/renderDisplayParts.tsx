@@ -16,10 +16,12 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import { CommentDisplayPart, DefaultThemeRenderContext, JSX } from 'typedoc';
+import { CommentDisplayPart, JSX } from 'typedoc';
+
+import type { TypedocRendererContext } from '../../../Wrappers';
 
 export const renderDisplayParts = (
-    { markdown }: DefaultThemeRenderContext,
+    { markdown }: TypedocRendererContext,
     parts: readonly CommentDisplayPart[] | undefined
 ): JSX.Element | undefined => {
     if (!parts?.length) return;

@@ -12,21 +12,20 @@
  */
 
 /**
- * This module contains the components that are used when rendering the page footer.
- *
- * @module Theme/Partials/Sections
+ * @module Theme/Partials/Navigation/Footer
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
 import { JSX } from 'typedoc';
 
-import type { GobstonesThemeContext } from '../../../GobstonesThemeContext';
+import { i18n } from '../../../../Strings';
+import type { TypedocRendererContext } from '../../../../Wrappers';
 
-export const footer = (context: GobstonesThemeContext): JSX.Element => {
+export const footer = (context: TypedocRendererContext): JSX.Element => {
     const hideGenerator = context.options.getValue('hideGenerator');
     let generatorDisplay = <></>;
     if (!hideGenerator) {
-        const message = context.i18n.theme_generated_using_typedoc();
+        const message = i18n.theme_generated_using_typedoc();
 
         // Only handles one occurrence, but that's all I expect...
         const index = message.indexOf('TypeDoc');

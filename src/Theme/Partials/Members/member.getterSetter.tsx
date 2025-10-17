@@ -17,11 +17,12 @@
  */
 
 import { JSX } from 'typedoc';
-import type { DeclarationReflection, DefaultThemeRenderContext } from 'typedoc';
+import type { DeclarationReflection } from 'typedoc';
 
-import { classNames } from '../../../Utils/lib';
+import type { TypedocRendererContext } from '../../../Wrappers';
+import { classNames } from '../../Utils';
 
-export const memberGetterSetter = (context: DefaultThemeRenderContext, props: DeclarationReflection): JSX.Element => (
+export const memberGetterSetter = (context: TypedocRendererContext, props: DeclarationReflection): JSX.Element => (
     <>
         <ul
             class={classNames(
@@ -32,16 +33,16 @@ export const memberGetterSetter = (context: DefaultThemeRenderContext, props: De
             )}
         >
             {!!props.getSignature && (
-                <li class={context.getReflectionClasses(props.getSignature as unknown as DeclarationReflection)}>
-                    <div class="tsd-signature" id={props.getSignature.anchor}>
+                <li>
+                    <div class="tsd-signature" id={context.getAnchor(props.getSignature)}>
                         {context.memberSignatureTitle(props.getSignature)}
                     </div>
                     <div class="tsd-description">{context.memberSignatureBody(props.getSignature)}</div>
                 </li>
             )}
             {!!props.setSignature && (
-                <li class={context.getReflectionClasses(props.setSignature as unknown as DeclarationReflection)}>
-                    <div class="tsd-signature" id={props.setSignature.anchor}>
+                <li>
+                    <div class="tsd-signature" id={context.getAnchor(props.setSignature)}>
                         {context.memberSignatureTitle(props.setSignature)}
                     </div>
                     <div class="tsd-description">{context.memberSignatureBody(props.setSignature)}</div>

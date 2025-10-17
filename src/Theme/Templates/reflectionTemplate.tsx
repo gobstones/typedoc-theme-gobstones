@@ -19,14 +19,15 @@
 import {
     ContainerReflection,
     DeclarationReflection,
-    DefaultThemeRenderContext,
     JSX,
     PageEvent,
     ReflectionKind,
     SignatureReflection
 } from 'typedoc';
 
-import { classNames, getKindClass, hasTypeParameters } from '../../Utils/lib';
+import { i18n } from '../../Strings';
+import type { TypedocRendererContext } from '../../Wrappers';
+import { classNames, getKindClass, hasTypeParameters } from '../Utils';
 
 /**
  * The component that defines how to render any reflection element.
@@ -39,7 +40,7 @@ import { classNames, getKindClass, hasTypeParameters } from '../../Utils/lib';
  * @returns A JSX.Element to render the reflection element.
  */
 export const reflectionTemplate = (
-    context: DefaultThemeRenderContext,
+    context: TypedocRendererContext,
     props: PageEvent<ContainerReflection>
 ): JSX.Element => {
     if (
@@ -76,7 +77,7 @@ export const reflectionTemplate = (
 
                     {!!props.model.implementedTypes && (
                         <section class="tsd-panel">
-                            <h4>{context.i18n.theme_implements()}</h4>
+                            <h4>{i18n.theme_implements()}</h4>
                             <ul class="tsd-hierarchy">
                                 {props.model.implementedTypes.map((item) => (
                                     <li>{context.type(item)}</li>
@@ -86,7 +87,7 @@ export const reflectionTemplate = (
                     )}
                     {!!props.model.implementedBy && (
                         <section class="tsd-panel">
-                            <h4>{context.i18n.theme_implemented_by()}</h4>
+                            <h4>{i18n.theme_implemented_by()}</h4>
                             <ul class="tsd-hierarchy">
                                 {props.model.implementedBy.map((item) => (
                                     <li>{context.type(item)}</li>
@@ -99,7 +100,7 @@ export const reflectionTemplate = (
                     )}
                     {!!props.model.indexSignatures?.length && (
                         <section class={classNames({ 'tsd-panel': true }, context.getReflectionClasses(props.model))}>
-                            <h4 class="tsd-before-signature">{context.i18n.theme_indexable()}</h4>
+                            <h4 class="tsd-before-signature">{i18n.theme_indexable()}</h4>
                             <div class="tsd-signatures">
                                 {props.model.indexSignatures.map((index) => renderIndexSignature(context, index))}
                             </div>
@@ -114,7 +115,7 @@ export const reflectionTemplate = (
     );
 };
 
-const renderIndexSignature = (context: DefaultThemeRenderContext, index: SignatureReflection): JSX.Element => (
+const renderIndexSignature = (context: TypedocRendererContext, index: SignatureReflection): JSX.Element => (
     <li class="tsd-index-signature">
         <div class="tsd-signature">
             {index.flags.isReadonly && <span class="tsd-signature-keyword">readonly </span>}
@@ -129,6 +130,6 @@ const renderIndexSignature = (context: DefaultThemeRenderContext, index: Signatu
         </div>
         {context.commentSummary(index)}
         {context.commentTags(index)}
-        {context.typeDetailsIfUseful(index.type)}
+        {context.typeDetailsIfUseful(index, index.type)}
     </li>
 );

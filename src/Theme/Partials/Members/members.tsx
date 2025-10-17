@@ -17,13 +17,10 @@
  */
 
 import { JSX } from 'typedoc';
-import type {
-    ContainerReflection,
-    DeclarationReflection,
-    DefaultThemeRenderContext,
-    DocumentReflection,
-    Reflection
-} from 'typedoc';
+import type { ContainerReflection } from 'typedoc';
+
+import type { TypedocRendererContext } from '../../../Wrappers';
+import { getMemberSections, isNoneSection } from '../../Utils';
 
 export const filterMap = <T, U>(iter: Iterable<T> | undefined, fn: (item: T) => U | undefined): U[] => {
     const result: U[] = [];
@@ -38,69 +35,29 @@ export const filterMap = <T, U>(iter: Iterable<T> | undefined, fn: (item: T) => 
     return result;
 };
 
-const getMemberSections = (
-    parent: ContainerReflection,
-    childFilter: (refl: Reflection) => boolean = () => true
-): { title: string; children: (DocumentReflection | DeclarationReflection)[] }[] => {
-    if (parent.categories?.length) {
-        return filterMap(parent.categories, (cat) => {
-            const children = cat.children.filter(childFilter);
-            if (!children.length) return;
-            if (!cat.allChildrenHaveOwnDocument()) {
-                return {
-                    title: cat.title,
-                    children: cat.children.filter((child) => !child.hasOwnDocument)
-                };
-            }
-            return undefined;
-        });
-    }
-
-    if (parent.groups?.length) {
-        return parent.groups.flatMap((group) => {
-            if (group.categories?.length) {
-                return filterMap(group.categories, (cat) => {
-                    const children = cat.children.filter(childFilter);
-                    if (!children.length) return;
-                    if (!cat.allChildrenHaveOwnDocument()) {
-                        return {
-                            title: `${group.title} - ${cat.title}`,
-                            children: cat.children.filter((child) => !child.hasOwnDocument)
-                        };
-                    }
-                    return undefined;
-                });
-            }
-
-            const children = group.children.filter(childFilter);
-            if (!children.length) return [];
-            return {
-                title: group.title,
-                description: group.description,
-                children: group.children.filter((child) => !child.hasOwnDocument)
-            };
-        });
-    }
-
-    return [];
-};
-
-export const members = (context: DefaultThemeRenderContext, props: ContainerReflection): JSX.Element => {
-    const sections = getMemberSections(props).filter((sect) => sect.children.length);
+export const members = (context: TypedocRendererContext, props: ContainerReflection): JSX.Element => {
+    const sections = getMemberSections(props, (child) => !context.router.hasOwnDocument(child));
 
     return (
         <>
-            {sections.map(({ title, children }) => {
-                context.page.startNewSection(title);
+            {sections.map((section) => {
+                if (isNoneSection(section)) {
+                    return (
+                        <section class="tsd-panel-group tsd-member-group">
+                            {section.children.map((item) => context.member(item))}
+                        </section>
+                    );
+                }
+
+                context.page.startNewSection(section.title);
 
                 return (
                     <details class="tsd-panel-group tsd-member-group tsd-accordion" open>
-                        <summary class="tsd-accordion-summary" data-key={'section-' + title}>
-                            <h2>
-                                {context.icons.chevronDown()} {title}
-                            </h2>
+                        <summary class="tsd-accordion-summary" data-key={'section-' + section.title}>
+                            {context.icons.chevronDown()}
+                            <h2>{section.title}</h2>
                         </summary>
-                        <section>{children.map((i) => context.member(i))}</section>
+                        <section>{section.children.map((item) => context.member(item))}</section>
                     </details>
                 );
             })}

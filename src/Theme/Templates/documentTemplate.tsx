@@ -16,8 +16,10 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import type { DefaultThemeRenderContext, DocumentReflection } from 'typedoc';
+import type { DocumentReflection } from 'typedoc';
 import { JSX, PageEvent } from 'typedoc';
+
+import type { TypedocRendererContext } from '../../Wrappers';
 
 /**
  * The component that defines how to render a markdown document
@@ -29,7 +31,7 @@ import { JSX, PageEvent } from 'typedoc';
  * @returns A JSX.Element to render the markdown document.
  */
 export const documentTemplate = (
-    context: DefaultThemeRenderContext,
+    context: TypedocRendererContext,
     props: PageEvent<DocumentReflection>
 ): JSX.Element => (
     <div class="tsd-panel tsd-typography">

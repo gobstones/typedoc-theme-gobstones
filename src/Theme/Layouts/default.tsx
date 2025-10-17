@@ -18,15 +18,9 @@
 
 import path from 'path';
 
-import {
-    DeclarationReflection,
-    DefaultThemeRenderContext,
-    JSX,
-    PageEvent,
-    ProjectReflection,
-    Reflection,
-    RenderTemplate
-} from 'typedoc';
+import { DeclarationReflection, JSX, PageEvent, ProjectReflection, Reflection, RenderTemplate } from 'typedoc';
+
+import type { TypedocRendererContext } from '../../Wrappers';
 
 /**
  * Calculate the favicon file based on the extension.
@@ -34,7 +28,7 @@ import {
  * @param context The theme context.
  * @returns The favicon component to use in the template.
  */
-const favicon = (context: DefaultThemeRenderContext): JSX.Element | undefined => {
+const favicon = (context: TypedocRendererContext): JSX.Element | undefined => {
     const fav = context.options.getValue('favicon');
     if (!fav) return undefined;
 
@@ -50,7 +44,7 @@ const favicon = (context: DefaultThemeRenderContext): JSX.Element | undefined =>
     }
 };
 
-const buildSiteMetadata = (context: DefaultThemeRenderContext): JSX.Element | undefined => {
+const buildSiteMetadata = (context: TypedocRendererContext): JSX.Element | undefined => {
     try {
         // We have to know where we are hosted in order to generate this block
         const url = new URL(context.options.getValue('hostedBaseUrl'));
@@ -115,7 +109,7 @@ export const getDisplayName = (refl: Reflection): string => {
  * @returns The default layout in use as a JSX.Element.
  */
 export const defaultLayout = (
-    context: DefaultThemeRenderContext,
+    context: TypedocRendererContext,
     template: RenderTemplate<PageEvent<Reflection>>,
     props: PageEvent<Reflection>
 ): JSX.Element => (

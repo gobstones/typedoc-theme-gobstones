@@ -16,9 +16,11 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import { DefaultThemeRenderContext, JSX, PageEvent, Reflection } from 'typedoc';
+import { JSX, PageEvent, Reflection } from 'typedoc';
 
-export const sidebar = (context: DefaultThemeRenderContext, props: PageEvent<Reflection>): JSX.Element => (
+import type { TypedocRendererContext } from '../../../../Wrappers';
+
+export const sidebar = (context: TypedocRendererContext, props: PageEvent<Reflection>): JSX.Element => (
     <>
         {context.sidebarLinks()}
         {context.navigation(props)}

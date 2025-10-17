@@ -16,8 +16,10 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import type { DefaultThemeRenderContext, PageEvent, ProjectReflection } from 'typedoc';
+import type { PageEvent, ProjectReflection } from 'typedoc';
 import { JSX } from 'typedoc';
+
+import type { TypedocRendererContext } from '../../Wrappers';
 
 /**
  * The component that defines how to render the main README file.
@@ -27,7 +29,7 @@ import { JSX } from 'typedoc';
  *
  * @returns A JSX.Element to render the README file.
  */
-export const indexTemplate = (context: DefaultThemeRenderContext, props: PageEvent<ProjectReflection>): JSX.Element => (
+export const indexTemplate = (context: TypedocRendererContext, props: PageEvent<ProjectReflection>): JSX.Element => (
     <div class="tsd-panel tsd-typography">
         <JSX.Raw html={context.markdown(props.model.readme || [])} />
     </div>

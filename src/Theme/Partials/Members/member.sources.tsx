@@ -17,13 +17,16 @@
  */
 
 import { JSX } from 'typedoc';
-import type { DeclarationReflection, DefaultThemeRenderContext, SignatureReflection, SourceReference } from 'typedoc';
+import type { DeclarationReflection, SignatureReflection, SourceReference } from 'typedoc';
 
-const sourceLink = (context: DefaultThemeRenderContext, item: SourceReference): JSX.Element => {
+import { i18n } from '../../../Strings';
+import type { TypedocRendererContext } from '../../../Wrappers';
+
+const sourceLink = (context: TypedocRendererContext, item: SourceReference): JSX.Element => {
     if (!item.url) {
         return (
             <li>
-                {context.i18n.theme_defined_in()} {item.fileName}:{item.line}
+                {i18n.theme_defined_in()} {item.fileName}:{item.line}
             </li>
         );
     }
@@ -31,7 +34,7 @@ const sourceLink = (context: DefaultThemeRenderContext, item: SourceReference): 
     if (context.options.getValue('sourceLinkExternal')) {
         return (
             <li>
-                {context.i18n.theme_defined_in()}{' '}
+                {i18n.theme_defined_in()}{' '}
                 <a href={item.url} class="external" target="_blank">
                     {item.fileName}:{item.line}
                 </a>
@@ -41,7 +44,7 @@ const sourceLink = (context: DefaultThemeRenderContext, item: SourceReference): 
 
     return (
         <li>
-            {context.i18n.theme_defined_in()}{' '}
+            {i18n.theme_defined_in()}{' '}
             <a href={item.url}>
                 {item.fileName}:{item.line}
             </a>
@@ -50,7 +53,7 @@ const sourceLink = (context: DefaultThemeRenderContext, item: SourceReference): 
 };
 
 export const memberSources = (
-    context: DefaultThemeRenderContext,
+    context: TypedocRendererContext,
     props: SignatureReflection | DeclarationReflection
 ): JSX.Element => {
     const sources: JSX.Element[] = [];
@@ -58,21 +61,21 @@ export const memberSources = (
     if (props.implementationOf) {
         sources.push(
             <p>
-                {context.i18n.theme_implementation_of()} {context.typeAndParent(props.implementationOf)}
+                {i18n.theme_implementation_of()} {context.typeAndParent(props.implementationOf)}
             </p>
         );
     }
     if (props.inheritedFrom) {
         sources.push(
             <p>
-                {context.i18n.theme_inherited_from()} {context.typeAndParent(props.inheritedFrom)}
+                {i18n.theme_inherited_from()} {context.typeAndParent(props.inheritedFrom)}
             </p>
         );
     }
     if (props.overwrites) {
         sources.push(
             <p>
-                {context.i18n.theme_overrides()} {context.typeAndParent(props.overwrites)}
+                {i18n.theme_overrides()} {context.typeAndParent(props.overwrites)}
             </p>
         );
     }

@@ -64,7 +64,7 @@
             }
         },
         {
-            "files": [".gitignore", ".npmignore", ".husky/*"],
+            "files": [".gitignore", ".npmignore", ".husky/!(*.ts)"],
             "options": {
                 "parser": "sh"
             }

@@ -16,13 +16,19 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import { DefaultThemeRenderContext, JSX, SomeType, TypeVisitor } from 'typedoc';
+import { JSX, Reflection, SomeType, TypeVisitor } from 'typedoc';
 
 import { renderingChildIsUseful, shouldExpandReference } from './typeDetailsImpl';
 
-export const typeDetailsIfUseful = (context: DefaultThemeRenderContext, type: SomeType | undefined): JSX.Children => {
+import type { TypedocRendererContext } from '../../../Wrappers';
+
+export const typeDetailsIfUseful = (
+    context: TypedocRendererContext,
+    reflectionOwningType: Reflection,
+    type: SomeType | undefined
+): JSX.Children => {
     if (type && renderingTypeDetailsIsUseful(type)) {
-        return context.typeDetails(type, false);
+        return context.typeDetails(reflectionOwningType, type, false);
     }
 };
 

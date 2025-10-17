@@ -19,7 +19,7 @@
 // @ts-expect-error: Plugin is JS only, ignore import as any.
 import { load } from 'typedoc-plugin-mdn-links';
 
-import { TypedocPlugin } from '../Utils/Plugins';
+import { TypedocPlugin } from '../Wrappers/TypedocPlugin';
 
 /**
  * A Plugin class that wraps the `typedoc-plugin-mdn-links` plugin.

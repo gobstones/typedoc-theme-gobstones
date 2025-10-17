@@ -1,3 +1,4 @@
+#!/usr/bin/env zx
 /*
  * *****************************************************************************
  * Copyright (C) National University of Quilmes 2018-2024
@@ -10,21 +11,13 @@
  * You may read the full license at https://gobstones.github.io/gobstones-guidelines/LICENSE.
  * *****************************************************************************
  */
+import { echo } from 'zx';
+import { script } from './_helpers.ts';
 
 /**
- * This module contains utility functions and elements used through the theme.
- *
- * It include's some helpers to load plugins and options, as well as a
- * copy from the lib file used in default typedoc theme, that is
- * not exposed with the library, with some minor changes.
- *
- * @module Utils
- * @author Alan Rodas Bonjour <alanrodas@gmail.com>
- *
- * @internal
+ * Run the tests, including linting
  */
+await script(`clean`, '--coverage');
+await script(`lint`);
 
-export * from './lib';
-export * from './formatter';
-export * from './Options';
-export * from './Plugins';
+echo('No tests to run');

@@ -14,7 +14,7 @@
 /**
  * The main module of the theme.
  *
- * @remarks
+ * @privateRemarks
  * To define a theme in TypeDoc, the main module need's to export only
  * a `load` function. This is the module that exports such function.
  *
@@ -28,11 +28,10 @@
  */
 import { Application } from 'typedoc';
 
-import { getDefaults } from './defaults';
+import { DefaultOptions } from './Options';
 import { MdnLinksPlugin, MergeModulePlugin, NotExportedPlugin, RemoveReferencesPlugin } from './Plugins';
 import { GobstonesTheme } from './Theme/GobstonesTheme';
-import * as Options from './Utils/Options';
-import * as Plugins from './Utils/Plugins';
+import { TypedocOptions, TypedocPlugins, TypedocThemes } from './Wrappers';
 
 /**
  * The **load** function is called by TypeDoc when loading the theme
@@ -46,14 +45,14 @@ export const load = (typedocApp: Application): void => {
     // Hook the default options so they are loaded
     // if no option was overwritten by the user configuration
     // This needs to come first than any other action.
-    Options.hookThemeDefaultOptions(typedocApp, getDefaults(typedocApp));
+    TypedocOptions.hookThemeDefaultOptions(typedocApp, DefaultOptions);
 
     // Included plugins
-    Plugins.loadPlugin(typedocApp, NotExportedPlugin);
-    Plugins.loadPlugin(typedocApp, MergeModulePlugin);
-    Plugins.loadPlugin(typedocApp, RemoveReferencesPlugin);
-    Plugins.loadPlugin(typedocApp, MdnLinksPlugin);
+    TypedocPlugins.loadPlugin(typedocApp, NotExportedPlugin);
+    TypedocPlugins.loadPlugin(typedocApp, MergeModulePlugin);
+    TypedocPlugins.loadPlugin(typedocApp, RemoveReferencesPlugin);
+    TypedocPlugins.loadPlugin(typedocApp, MdnLinksPlugin);
 
     // Include theme
-    typedocApp.renderer.defineTheme('gobstones', GobstonesTheme);
+    TypedocThemes.defineTheme(typedocApp, GobstonesTheme);
 };

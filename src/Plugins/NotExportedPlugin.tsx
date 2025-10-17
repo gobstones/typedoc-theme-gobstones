@@ -27,6 +27,7 @@
 
 import {
     Application,
+    Context,
     Converter,
     DeclarationReflection,
     ParameterType,
@@ -34,10 +35,9 @@ import {
     ReflectionKind,
     TypeScript
 } from 'typedoc';
-import { Context } from 'typedoc/dist/lib/converter/context';
 import * as ts from 'typescript';
 
-import { TypedocPlugin } from '../Utils/Plugins';
+import { TypedocPlugin } from '../Wrappers/TypedocPlugin';
 
 // eslint-disable-next-line no-bitwise
 const ModuleFlags = TypeScript.SymbolFlags.ValueModule | TypeScript.SymbolFlags.NamespaceModule;
@@ -76,7 +76,8 @@ export class NotExportedPlugin extends TypedocPlugin {
             type: ParameterType.Array
         });
 
-        this.application.converter.on(Converter.EVENT_BEGIN, () => {
+        // eslint-disable-next-line
+        (this.application.converter as any).on(Converter.EVENT_BEGIN, () => {
             const includeTagTemp = this.application.options.getValue('includeTags');
             if (typeof includeTagTemp === 'string') {
                 const tagName = includeTagTemp.toLocaleLowerCase();
@@ -86,19 +87,22 @@ export class NotExportedPlugin extends TypedocPlugin {
             }
         });
 
-        this.application.converter.on(
+        // eslint-disable-next-line
+        (this.application.converter as any).on(
             Converter.EVENT_CREATE_DECLARATION,
             (context: Context, reflection: DeclarationReflection) => {
                 this._lookForFakeExports(context, reflection);
             }
         );
 
-        this.application.converter.on(Converter.EVENT_END, () => {
+        // eslint-disable-next-line
+        (this.application.converter as any).on(Converter.EVENT_END, () => {
             this.checkedForModuleExports.clear();
         });
 
         // Fix for the new TypeDoc JSDoc tag linting.
-        this.application.on(Application.EVENT_BOOTSTRAP_END, () => {
+        // eslint-disable-next-line
+        (this.application as any).on(Application.EVENT_BOOTSTRAP_END, () => {
             const modifiers = this.application.options.getValue('modifierTags');
             for (const tag of this._includedTags) {
                 if (!modifiers.includes(tag)) {
@@ -116,9 +120,13 @@ export class NotExportedPlugin extends TypedocPlugin {
         while (!targetModule.kindOf(ReflectionKind.Module | ReflectionKind.Project)) {
             targetModule = targetModule.parent as DeclarationReflection;
         }
+        if (!(targetModule.parent === context.scope || targetModule === context.scope)) {
+            return;
+        }
+
         const moduleContext = context.withScope(targetModule);
 
-        const reflSymbol = context.project.getSymbolFromReflection(reflection);
+        const reflSymbol = context.getSymbolFromReflection(reflection);
 
         if (!reflSymbol) {
             // Global file, no point in doing anything here. TypeDoc will already
@@ -127,7 +135,9 @@ export class NotExportedPlugin extends TypedocPlugin {
         }
 
         for (const declaration of reflSymbol.declarations || []) {
-            this._checkFakeExportsOfFile(declaration.getSourceFile(), moduleContext);
+            if (reflection.getFullName() === 'Wrappers') {
+                this._checkFakeExportsOfFile(declaration.getSourceFile(), moduleContext);
+            }
         }
     }
 
@@ -143,18 +153,18 @@ export class NotExportedPlugin extends TypedocPlugin {
         const checkedScopes = this.checkedForModuleExports.get(context.scope) || new Set();
         this.checkedForModuleExports.set(context.scope, checkedScopes);
 
-        if (checkedScopes.has(file)) return;
+        if (checkedScopes.has(file)) {
+            return;
+        }
         checkedScopes.add(file);
 
         const exportedSymbols = context.checker.getExportsOfModule(moduleSymbol);
-
         const symbols: ts.Symbol[] = context.checker
             .getSymbolsInScope(file, TypeScript.SymbolFlags.ModuleMember)
             .filter(
                 (symbol: ts.Symbol) =>
                     symbol.declarations?.some((d) => d.getSourceFile() === file) && !exportedSymbols.includes(symbol)
             );
-
         for (const symbol of symbols) {
             if (
                 symbol

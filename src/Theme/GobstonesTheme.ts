@@ -22,17 +22,17 @@ import url from 'url';
 
 import {
     DeclarationReflection,
-    DefaultTheme,
     DefaultThemeRenderContext,
     DocumentReflection,
     PageEvent,
     Reflection,
     Renderer,
-    RendererEvent,
     SignatureReflection
 } from 'typedoc';
 
 import { GobstonesThemeContext } from './GobstonesThemeContext';
+
+import { TypedocTheme } from '../Wrappers';
 
 /**
  * This class represents the main element of the theme.
@@ -40,17 +40,24 @@ import { GobstonesThemeContext } from './GobstonesThemeContext';
  * TypeDoc when the theme is going to be used, and it's
  * constructor method called upon theme initialization.
  *
- * @remarks
+ * @privateRemarks
  * A Theme can be defined as a subclass of the built-in TypeDoc's
  * `Theme` class. Yet, it is most useful to re-use basic behavior by
- * extending the `DefaultTheme` class instead.
- * By extending this class, we should only overwrite methods that are
- * going to change from the default class, most likely the {@link constructor}
- * method and the {@link getRenderContext} methods. By doing this we can also
+ * extending the `DefaultTheme` class instead. To achieve this, we use
+ * our {@link Wrappers} module, to abstract away the build-in TypeDoc's types.
+ *
+ * By extending, we should only overwrite methods that are
+ * going to change from the default class, most likely the {@link GobstonesTheme.constructor}
+ * and the {@link getRenderContext} method. By doing this we can also
  * have the benefit of accessing the currently running application through the
- * `this.application` property, allowing us to access different hooks.
+ * `this.application` property, allowing us to access different hooks of the app.
  */
-export class GobstonesTheme extends DefaultTheme {
+export class GobstonesTheme extends TypedocTheme {
+    /**
+     * The default name used by this theme.
+     */
+    public static name: string = 'gobstones';
+
     /**
      * The initialize method is called upon theme setup by TypeDoc.
      * This method's main purpose is to provide basic theme setup,
@@ -59,22 +66,20 @@ export class GobstonesTheme extends DefaultTheme {
      */
     public constructor(renderer: Renderer) {
         super(renderer);
-
         const rootDir = typeof __dirname === 'undefined' ? path.dirname(url.fileURLToPath(import.meta.url)) : __dirname;
-        const staticResourceFolder = path.resolve(rootDir, 'static');
-
+        const staticResourceFolder = path.resolve(rootDir, 'assets');
         // Triggered when all elements are ready at output folder
-        this.application.renderer.on(RendererEvent.END, () => {
+        // eslint-disable-next-line
+        (renderer as any).on(Renderer.EVENT_END, () => {
             // We are going to reorganize assets se they live in a proper
             // folder into the assets directory
-
             // Get the directories for the output files
-            const outputFolder = this.application.options.getValue('out');
+            const outputFolder = this.application.options.getValue('out') as string;
             const assetsFolder = path.join(outputFolder, 'assets');
 
             // copy the assets from the theme to the output folder
             if (fs.existsSync(staticResourceFolder)) {
-                fs.cpSync(staticResourceFolder, outputFolder, { recursive: true });
+                fs.cpSync(staticResourceFolder, assetsFolder, { recursive: true });
             }
 
             // ensure the three base folders for organization exist
@@ -110,7 +115,7 @@ export class GobstonesTheme extends DefaultTheme {
     public getRenderContext(pageEvent: PageEvent<Reflection>): DefaultThemeRenderContext {
         // The render context controls the different components and files this
         // theme is going to use.
-        return new GobstonesThemeContext(this, pageEvent, this.application.options);
+        return new GobstonesThemeContext(this.router, this, pageEvent, this.application.options);
     }
 
     /**
@@ -158,8 +163,7 @@ export class GobstonesTheme extends DefaultTheme {
                 let firstSignature: SignatureReflection | undefined;
 
                 if (reflection.isDeclaration()) {
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-                    const declRefl = reflection as DeclarationReflection;
+                    const declRefl = reflection;
                     firstSignature = declRefl.signatures?.[0];
                 }
 
@@ -177,7 +181,6 @@ export class GobstonesTheme extends DefaultTheme {
                 }
             }
         }
-
         return classes.join(' ');
     }
 }

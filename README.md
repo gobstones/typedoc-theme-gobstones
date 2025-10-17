@@ -26,37 +26,23 @@ npm install @gobstones/typedoc-theme-gobstones
 
 ### Usage
 
-Again, if you are using `gobstones-scripts` with the default configuration you don't need to do anything. If you want to use in different type of project, or provide your custom configuration, read the following.
+Again, if you are using `gobstones-scripts` with the default configuration you don't need to do anything. If you want to use in a different type of project, or provide your custom configuration, read the following.
 
-Configure your project to use this theme by editing your `typedoc.config.js` file. Add the theme as a plugin, and set the theme to be `gobstones`. Additionally, configure properties for the default theme and plugins so the theme behaves as expected.
+Configure your project to use this theme by editing your `typedoc.config.mjs` file. Add the theme as a plugin, and set the theme to be `gobstones`. Additionally, configure properties for the default theme and plugins so the theme behaves as expected.
 
 ```js
-module.exports = {
-    // ...
-    // You default configuration before this point
-    plugin: [
-        // ...
-        // Set up the theme, alongside your other plugins
-        '@gobstones/typedoc-theme-gobstones'
-    ],
-    excludeTags: [
-        // Remove the @internal from the excluded tags
-        '@override',
-        '@virtual',
-        '@satisfies',
-        '@overload'
-    ],
-    visibilityFilters: {
-        // Add @internal as a visibility filter
-        '@internal': false,
-        protected: false,
-        private: false,
-        inherited: false
+export default {
+    // Configuration
+    tsconfig: './tsconfig.json',
+    compilerOptions: {
+        rootDir: './src'
     },
-    // Set `gobstones` as the theme
-    theme: 'gobstones',
-    // Configure the merge modules strategy as a module or module-category
-    mergeModulesMergeMode: 'module'
+    plugin: ['./dist/index.mjs'],
+    // Input
+    entryPoints: ['./src'],
+    // Output
+    out: './docs',
+    theme: 'gobstones'
 };
 ```
 

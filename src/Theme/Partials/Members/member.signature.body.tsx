@@ -17,12 +17,14 @@
  */
 
 /* eslint-disable no-null/no-null */
-import { DefaultThemeRenderContext, JSX, SignatureReflection } from 'typedoc';
+import { JSX, SignatureReflection } from 'typedoc';
 
-import { hasTypeParameters } from '../../../Utils/lib';
+import { i18n } from '../../../Strings';
+import type { TypedocRendererContext } from '../../../Wrappers';
+import { hasTypeParameters } from '../../Utils';
 
 export const memberSignatureBody = (
-    context: DefaultThemeRenderContext,
+    context: TypedocRendererContext,
     props: SignatureReflection,
     { hideSources = false }: { hideSources?: boolean } = {}
 ): JSX.Element => {
@@ -37,28 +39,26 @@ export const memberSignatureBody = (
 
             {props.parameters && props.parameters.length > 0 && (
                 <div class="tsd-parameters">
-                    <h4 class="tsd-parameters-title">{context.i18n.kind_plural_parameter()}</h4>
+                    <h4 class="tsd-parameters-title">{i18n.kind_plural_parameter()}</h4>
                     <ul class="tsd-parameter-list">
                         {props.parameters.map((item) => (
-                            <li class="tsd-parameter-description">
-                                <div class="tsd-parameter-tags">{context.reflectionFlags(item)}</div>
+                            <li>
                                 <span>
                                     {context.reflectionFlags(item)}
-                                    {!!item.flags.isRest && <span class="tsd-signature-symbol">...</span>}
+                                    {item.flags.isRest && <span class="tsd-signature-symbol">...</span>}
                                     <span class="tsd-kind-parameter">{item.name}</span>
                                     {': '}
                                     {context.type(item.type)}
-
-                                    {item.defaultValue !== null && (
+                                    {item.defaultValue != null && (
                                         <span class="tsd-signature-symbol">
-                                            {item.defaultValue && ' = '}
+                                            {' = '}
                                             {item.defaultValue}
                                         </span>
                                     )}
                                 </span>
                                 {context.commentSummary(item)}
                                 {context.commentTags(item)}
-                                {context.typeDetailsIfUseful(item.type)}
+                                {context.typeDetailsIfUseful(item, item.type)}
                             </li>
                         ))}
                     </ul>
@@ -67,10 +67,10 @@ export const memberSignatureBody = (
             {props.type && (
                 <>
                     <h4 class="tsd-returns-title">
-                        {context.i18n.theme_returns()} {context.type(props.type)}
+                        {i18n.theme_returns()} {context.type(props.type)}
                     </h4>
                     {returnsTag && <JSX.Raw html={context.markdown(returnsTag.content)} />}
-                    {context.typeDetailsIfUseful(props.type)}
+                    {context.typeDetailsIfUseful(props, props.type)}
                 </>
             )}
 

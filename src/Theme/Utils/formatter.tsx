@@ -12,10 +12,7 @@
  */
 
 /**
- * This formatter is used for printing the code parts with colors.
- * It's the same as the one provided by the Default theme.
- *
- * @module Utils/formatter
+ * @module Theme/Utils
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
@@ -29,6 +26,7 @@ import {
     ReferenceType,
     Reflection,
     ReflectionKind,
+    Router,
     SignatureReflection,
     SomeType,
     TypeContext,
@@ -577,7 +575,14 @@ export class FormattedCodeBuilder {
     public forceWrap = new Set<number>();
     public id = 0;
 
-    public constructor(public readonly urlTo: (refl: Reflection) => string) {}
+    public constructor(
+        private readonly router: Router,
+        private readonly relativeReflection: Reflection
+    ) {}
+
+    public urlTo(refl: Reflection): string {
+        return this.router.relativeUrl(this.relativeReflection, refl);
+    }
 
     public newId(): number {
         return ++this.id;
@@ -621,10 +626,12 @@ export class FormattedCodeBuilder {
                             ? [simpleElement(<span class="tsd-signature-keyword">readonly</span>), space()]
                             : []),
                         simpleElement(<span class="tsd-signature-symbol">[</span>),
-                        simpleElement(<span class={getKindClass(index)}>{index.parameters?.[0].name}</span>),
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        simpleElement(<span class={getKindClass(index)}>{index.parameters![0].name}</span>),
                         simpleElement(<span class="tsd-signature-symbol">:</span>),
                         space(),
-                        this.type(index.parameters?.[0].type, TypeContext.none),
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        this.type(index.parameters![0].type, TypeContext.none),
                         simpleElement(<span class="tsd-signature-symbol">]:</span>),
                         space(),
                         this.type(index.type, TypeContext.none)
@@ -666,6 +673,19 @@ export class FormattedCodeBuilder {
         }
 
         return simpleElement(<span class="tsd-signature-symbol">{'{}'}</span>);
+    }
+
+    public typeAlias(item: DeclarationReflection): FormatterNode {
+        return nodes(
+            simpleElement(<span class="tsd-signature-keyword">type</span>),
+            space(),
+            simpleElement(<span class={getKindClass(item)}>{item.name}</span>),
+            this.typeParameters(item),
+            space(),
+            simpleElement(<span class="tsd-signature-symbol">{'='}</span>),
+            space(),
+            this.reflection(item, { topLevelLinks: true })
+        );
     }
 
     public interface(item: DeclarationReflection): FormatterNode {
@@ -737,13 +757,15 @@ export class FormattedCodeBuilder {
                 name = nodes(simpleElement(<span class="tsd-signature-keyword">set</span>), space(), name);
                 break;
             }
-            default:
+            default: {
                 break;
+            }
         }
 
         const id = this.newId();
         return group(id, [
             name,
+            sig.parent.flags.isOptional ? simpleElement(<span class="tsd-signature-symbol">?</span>) : emptyNode,
             this.typeParameters(sig),
             ...this.parameters(sig, id),
             nodes(
@@ -755,7 +777,7 @@ export class FormattedCodeBuilder {
         ]);
     }
 
-    public typeParameters(sig: SignatureReflection | DeclarationReflection): FormatterNode {
+    private typeParameters(sig: SignatureReflection | DeclarationReflection): FormatterNode {
         if (!sig.typeParameters?.length) {
             return emptyNode;
         }
@@ -777,7 +799,7 @@ export class FormattedCodeBuilder {
         ]);
     }
 
-    public typeParameter(param: TypeParameterReflection): FormatterNode {
+    private typeParameter(param: TypeParameterReflection): FormatterNode {
         let prefix = emptyNode;
         if (param.flags.isConst) {
             prefix = nodes(simpleElement(<span class="tsd-signature-keyword">const</span>), space());
@@ -789,14 +811,20 @@ export class FormattedCodeBuilder {
                 space()
             );
         }
-        const content = [
-            prefix,
-            simpleElement(
-                <a class="tsd-signature-type tsd-kind-type-parameter" href={this.urlTo(param)}>
-                    {param.name}
-                </a>
-            )
-        ];
+
+        const content = [prefix];
+
+        if (this.router.hasUrl(param)) {
+            content.push(
+                simpleElement(
+                    <a class="tsd-signature-type tsd-kind-type-parameter" href={this.urlTo(param)}>
+                        {param.name}
+                    </a>
+                )
+            );
+        } else {
+            content.push(simpleElement(<span class="tsd-signature-type tsd-kind-type-parameter">{param.name}</span>));
+        }
 
         if (param.type) {
             content.push(
@@ -819,7 +847,7 @@ export class FormattedCodeBuilder {
         return group(this.newId(), content);
     }
 
-    public parameters(sig: SignatureReflection, id: number): FormatterNode[] {
+    private parameters(sig: SignatureReflection, id: number): FormatterNode[] {
         if (!sig.parameters?.length) {
             return [simpleElement(<span class="tsd-signature-symbol">()</span>)];
         }
@@ -840,7 +868,7 @@ export class FormattedCodeBuilder {
         ];
     }
 
-    public parameter(param: ParameterReflection): FormatterNode {
+    private parameter(param: ParameterReflection): FormatterNode {
         const content: FormatterNode[] = [];
         if (param.flags.isRest) {
             content.push(simpleElement(<span class="tsd-signature-symbol">...</span>));
@@ -861,7 +889,7 @@ export class FormattedCodeBuilder {
         return nodes(...content);
     }
 
-    public propertyName(reflection: Reflection, options: { topLevelLinks?: boolean }): FormatterNode {
+    private propertyName(reflection: Reflection, options: { topLevelLinks?: boolean }): FormatterNode {
         const entityName = /^[A-Z_$][\w$]*$/i.test(reflection.name) ? reflection.name : JSON.stringify(reflection.name);
 
         if (options.topLevelLinks) {

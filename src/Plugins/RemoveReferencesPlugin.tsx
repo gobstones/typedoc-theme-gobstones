@@ -18,7 +18,7 @@
 
 import { Context, Converter, ReflectionKind } from 'typedoc';
 
-import { TypedocPlugin } from '../Utils/Plugins';
+import { TypedocPlugin } from '../Wrappers/TypedocPlugin';
 
 /**
  * A Plugin to remove re-exports references.

@@ -16,16 +16,23 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import { DefaultThemeRenderContext, JSX, SomeType } from 'typedoc';
+import { JSX, Reflection, SomeType } from 'typedoc';
 
 import { renderingTypeDetailsIsUseful } from './typeDetailsIfUseful';
 
-export const typeDeclaration = (context: DefaultThemeRenderContext, type: SomeType): JSX.Element | undefined => {
+import { i18n } from '../../../Strings';
+import type { TypedocRendererContext } from '../../../Wrappers';
+
+export const typeDeclaration = (
+    context: TypedocRendererContext,
+    reflectionOwningType: Reflection,
+    type: SomeType
+): JSX.Element | undefined => {
     if (renderingTypeDetailsIsUseful(type)) {
         return (
             <div class="tsd-type-declaration">
-                <h4>{context.i18n.theme_type_declaration()}</h4>
-                {context.typeDetails(type, true)}
+                <h4>{i18n.theme_type_declaration()}</h4>
+                {context.typeDetails(reflectionOwningType, type, true)}
             </div>
         );
     }

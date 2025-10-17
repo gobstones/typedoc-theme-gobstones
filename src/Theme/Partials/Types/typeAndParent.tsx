@@ -16,9 +16,11 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import { ArrayType, DefaultThemeRenderContext, JSX, ReferenceType, SignatureReflection, Type } from 'typedoc';
+import { ArrayType, JSX, ReferenceType, SignatureReflection, Type } from 'typedoc';
 
-export const typeAndParent = (context: DefaultThemeRenderContext, props: Type): JSX.Element => {
+import type { TypedocRendererContext } from '../../../Wrappers';
+
+export const typeAndParent = (context: TypedocRendererContext, props: Type): JSX.Element => {
     if (props instanceof ArrayType) {
         return (
             <>
@@ -30,12 +32,12 @@ export const typeAndParent = (context: DefaultThemeRenderContext, props: Type): 
 
     if (props instanceof ReferenceType && props.reflection) {
         const refl = props.reflection instanceof SignatureReflection ? props.reflection.parent : props.reflection;
-        const parent = refl.parent;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const parent = refl.parent!;
 
         return (
             <>
-                {parent?.url ? <a href={context.urlTo(parent)}>{parent.name}</a> : parent?.name}.
-                {refl.url ? <a href={context.urlTo(refl)}>{refl.name}</a> : refl.name}
+                {<a href={context.urlTo(parent)}>{parent.name}</a>}.{<a href={context.urlTo(refl)}>{refl.name}</a>}
             </>
         );
     }

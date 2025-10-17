@@ -18,7 +18,7 @@
 
 import { load } from 'typedoc-plugin-merge-modules';
 
-import { TypedocPlugin } from '../Utils/Plugins';
+import { TypedocPlugin } from '../Wrappers/TypedocPlugin';
 
 /**
  * A Plugin class that wraps the `typedoc-plugin-merge-modules` plugin.

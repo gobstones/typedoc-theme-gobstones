@@ -16,11 +16,13 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import { DefaultThemeRenderContext, JSX, PageEvent, PageHeading, Reflection } from 'typedoc';
+import { JSX, PageEvent, PageHeading, Reflection } from 'typedoc';
 
-import { wbr } from '../../../../Utils/lib';
+import { i18n } from '../../../../Strings';
+import type { TypedocRendererContext } from '../../../../Wrappers';
+import { wbr } from '../../../Utils';
 
-const buildSectionNavigation = (context: DefaultThemeRenderContext, headings: PageHeading[]): JSX.Element[] => {
+const buildSectionNavigation = (context: TypedocRendererContext, headings: PageHeading[]): JSX.Element[] => {
     const levels: JSX.Element[][] = [[]];
 
     const finalizeLevel = (finishedHandlingHeadings: boolean): void => {
@@ -30,7 +32,13 @@ const buildSectionNavigation = (context: DefaultThemeRenderContext, headings: Pa
             return;
         }
 
-        const built = <ul>{level?.map((l) => <li>{l}</li>)}</ul>;
+        const built = (
+            <ul>
+                {level?.map((l) => (
+                    <li>{l}</li>
+                ))}
+            </ul>
+        );
         levels[levels.length - 1].push(built);
     };
 
@@ -65,7 +73,7 @@ const buildSectionNavigation = (context: DefaultThemeRenderContext, headings: Pa
     return levels[0];
 };
 
-export const pageNavigation = (context: DefaultThemeRenderContext, props: PageEvent<Reflection>): JSX.Element => {
+export const pageNavigation = (context: TypedocRendererContext, props: PageEvent<Reflection>): JSX.Element => {
     if (!props.pageSections.some((sect) => sect.headings.length)) {
         return <></>;
     }
@@ -93,7 +101,7 @@ export const pageNavigation = (context: DefaultThemeRenderContext, props: PageEv
             <summary class="tsd-accordion-summary">
                 <h3>
                     {context.icons.chevronDown()}
-                    {context.i18n.theme_on_this_page()}
+                    {i18n.theme_on_this_page()}
                 </h3>
             </summary>
             <div class="tsd-accordion-details">{sections}</div>

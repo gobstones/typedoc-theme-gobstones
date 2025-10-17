@@ -12,12 +12,15 @@
  */
 
 /**
- * @module Theme/Partials
+ * @module Theme/Partials/Others
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
 import { JSX } from 'typedoc';
-import type { DeclarationHierarchy, DefaultThemeRenderContext, Type } from 'typedoc';
+import type { DeclarationHierarchy, Type } from 'typedoc';
+
+import { i18n } from '../../../Strings';
+import type { TypedocRendererContext } from '../../../Wrappers';
 
 const isLinkedReferenceType = (type: Type): boolean =>
     type.visit({
@@ -33,7 +36,7 @@ const hasAnyLinkedReferenceType = (h: DeclarationHierarchy | undefined): boolean
 };
 
 export const hierarchy = (
-    context: DefaultThemeRenderContext,
+    context: TypedocRendererContext,
     typeHierarchy: DeclarationHierarchy | undefined
 ): JSX.Element | undefined => {
     if (!typeHierarchy) return;
@@ -44,7 +47,7 @@ export const hierarchy = (
                 {' '}
                 (
                 <a href={context.relativeURL('hierarchy.html') + '#' + context.page.model.getFullName()}>
-                    {context.i18n.theme_hierarchy_view_summary()}
+                    {i18n.theme_hierarchy_view_summary()}
                 </a>
                 )
             </>
@@ -55,7 +58,7 @@ export const hierarchy = (
     return (
         <section class="tsd-panel tsd-hierarchy">
             <h4>
-                {context.i18n.theme_hierarchy()}
+                {i18n.theme_hierarchy()}
                 {summaryLink}
             </h4>
             {hierarchyList(context, typeHierarchy)}
@@ -63,7 +66,7 @@ export const hierarchy = (
     );
 };
 
-const hierarchyList = (context: DefaultThemeRenderContext, props: DeclarationHierarchy): JSX.Element => (
+const hierarchyList = (context: TypedocRendererContext, props: DeclarationHierarchy): JSX.Element => (
     <ul class="tsd-hierarchy">
         {props.types.map((item, i, l) => (
             <li>

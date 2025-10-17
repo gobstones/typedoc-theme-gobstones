@@ -16,15 +16,17 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import { DefaultThemeRenderContext, JSX, SignatureReflection } from 'typedoc';
-import { FormattedCodeBuilder, FormattedCodeGenerator, Wrap } from 'Utils';
+import { JSX, SignatureReflection } from 'typedoc';
+
+import type { TypedocRendererContext } from '../../../Wrappers';
+import { FormattedCodeBuilder, FormattedCodeGenerator, Wrap } from '../../Utils';
 
 export const memberSignatureTitle = (
-    context: DefaultThemeRenderContext,
+    context: TypedocRendererContext,
     props: SignatureReflection,
     options: { hideName?: boolean } = {}
 ): JSX.Element => {
-    const builder = new FormattedCodeBuilder(context.urlTo);
+    const builder = new FormattedCodeBuilder(context.router, context.model);
     const tree = builder.signature(props, options);
     const generator = new FormattedCodeGenerator(context.options.getValue('typePrintWidth'));
     generator.node(tree, Wrap.Detect);

@@ -12,11 +12,10 @@
  */
 
 /**
- * @module Utils
+ * @module Wrappers
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
-
-import { Application } from 'typedoc';
+import { TypedocApplication } from './TypedocApplication';
 
 /**
  * A class that wraps the idea of a `Plugin` for TypeDoc.
@@ -36,24 +35,14 @@ export abstract class TypedocPlugin {
      *
      * @param application - The instance of the running TypeDoc application
      */
-    public constructor(public application: Application) {}
+    public constructor(public application: TypedocApplication) {}
 
     /**
      * Initialize the plugin, loading all required configuration for it.
      *
      * @remarks
      * This function is called when the plugin is loaded, after instantiation
-     * by the {@link loadPlugin} function.
+     * by the {@link Wrappers.TypedocPlugins.loadPlugin} function.
      */
     public abstract initialize(): void | Promise<void>;
 }
-
-/**
- * Load a plugin into the application.
- *
- * @param typedocApp - The instance of the running TypeDoc application
- * @param plugin - The class of the plugin to load.
- */
-export const loadPlugin = (typedocApp: Application, plugin: new (app: Application) => TypedocPlugin): void => {
-    void new plugin(typedocApp).initialize();
-};

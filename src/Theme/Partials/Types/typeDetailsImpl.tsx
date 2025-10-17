@@ -19,7 +19,6 @@
 import {
     CommentDisplayPart,
     DeclarationReflection,
-    DefaultThemeRenderContext,
     JSX,
     ReferenceType,
     Reflection,
@@ -28,10 +27,12 @@ import {
     SomeType
 } from 'typedoc';
 
-import { classNames, getKindClass } from '../../../Utils';
+import type { TypedocRendererContext } from '../../../Wrappers';
+import { classNames, getKindClass } from '../../Utils';
+import { anchorTargetIfPresent } from '../Others/anchorIcon';
 
 const highlightedPropertyDetails = (
-    context: DefaultThemeRenderContext,
+    context: TypedocRendererContext,
     highlighted?: Map<string, CommentDisplayPart[]>
 ): JSX.Element | undefined => {
     if (!highlighted?.size) return;
@@ -51,7 +52,7 @@ const highlightedPropertyDetails = (
 };
 
 const highlightedDeclarationDetails = (
-    context: DefaultThemeRenderContext,
+    context: TypedocRendererContext,
     declaration: DeclarationReflection,
     renderAnchors: boolean,
     highlightedProperties?: Map<string, CommentDisplayPart[]>
@@ -68,7 +69,7 @@ const highlightedDeclarationDetails = (
 );
 
 const declarationDetails = (
-    context: DefaultThemeRenderContext,
+    context: TypedocRendererContext,
     declaration: DeclarationReflection,
     renderAnchors: boolean
 ): JSX.Children => (
@@ -80,7 +81,7 @@ const declarationDetails = (
                     <ul class={classNames({ 'tsd-signatures': true }, context.getReflectionClasses(declaration))}>
                         {declaration.signatures.map((item) => (
                             <>
-                                <li class="tsd-signature" id={item.anchor}>
+                                <li class="tsd-signature" id={anchorTargetIfPresent(context, item)}>
                                     {context.memberSignatureTitle(item, {
                                         hideName: true
                                     })}
@@ -102,7 +103,7 @@ const declarationDetails = (
 );
 
 const renderChild = (
-    context: DefaultThemeRenderContext,
+    context: TypedocRendererContext,
     child: DeclarationReflection,
     renderAnchors: boolean,
     highlight?: CommentDisplayPart[]
@@ -111,10 +112,9 @@ const renderChild = (
         return (
             <li class="tsd-parameter">
                 <h5>
-                    {!!child.flags.isRest && <span class="tsd-signature-symbol">...</span>}
+                    {child.flags.isRest && <span class="tsd-signature-symbol">...</span>}
                     <span class={getKindClass(child)}>{child.name}</span>
-                    {child.anchor && <a id={child.anchor} class="tsd-anchor"></a>}
-                    <span class="tsd-signature-symbol">{!!child.flags.isOptional && '?'}:</span>
+                    <span class="tsd-signature-symbol">{child.flags.isOptional && '?'}:</span>
                     function
                 </h5>
 
@@ -141,11 +141,10 @@ const renderChild = (
             <li class="tsd-parameter">
                 <h5>
                     {context.reflectionFlags(child)}
-                    {!!child.flags.isRest && <span class="tsd-signature-symbol">...</span>}
+                    {child.flags.isRest && <span class="tsd-signature-symbol">...</span>}
                     <span class={getKindClass(child)}>{child.name}</span>
-                    {child.anchor && <a id={child.anchor} class="tsd-anchor"></a>}
                     <span class="tsd-signature-symbol">
-                        {!!child.flags.isOptional && '?'}
+                        {child.flags.isOptional && '?'}
                         {': '}
                     </span>
                     {context.type(child.type)}
@@ -169,7 +168,6 @@ const renderChild = (
                         {context.reflectionFlags(child.getSignature)}
                         <span class="tsd-signature-keyword">get </span>
                         <span class={getKindClass(child)}>{child.name}</span>
-                        {child.anchor && <a id={child.anchor} class="tsd-anchor"></a>}
                         <span class="tsd-signature-symbol">(): </span>
                         {context.type(child.getSignature.type)}
                     </h5>
@@ -183,7 +181,6 @@ const renderChild = (
                         {context.reflectionFlags(child.setSignature)}
                         <span class="tsd-signature-keyword">set </span>
                         <span class={getKindClass(child)}>{child.name}</span>
-                        {!child.getSignature && child.anchor && <a id={child.anchor} class="tsd-anchor"></a>}
                         <span class="tsd-signature-symbol">(</span>
                         {child.setSignature.parameters?.map((item) => (
                             <>
@@ -203,7 +200,7 @@ const renderChild = (
     );
 };
 
-const renderIndexSignature = (context: DefaultThemeRenderContext, index: SignatureReflection): JSX.Element => (
+const renderIndexSignature = (context: TypedocRendererContext, index: SignatureReflection): JSX.Element => (
     <li class="tsd-parameter-index-signature">
         <h5>
             {index.flags.isReadonly && <span class="tsd-signature-keyword">readonly </span>}
@@ -220,7 +217,7 @@ const renderIndexSignature = (context: DefaultThemeRenderContext, index: Signatu
         </h5>
         {context.commentSummary(index)}
         {context.commentTags(index)}
-        {index.type && context.typeDeclaration(index.type)}
+        {index.type && context.typeDeclaration(index, index.type)}
     </li>
 );
 
@@ -239,14 +236,15 @@ export const shouldExpandReference = (reference: ReferenceType): boolean => {
 };
 
 export const typeDetailsImpl = (
-    context: DefaultThemeRenderContext,
+    context: TypedocRendererContext,
+    reflectionOwningType: Reflection,
     type: SomeType,
     renderAnchors: boolean,
     highlighted?: Map<string, CommentDisplayPart[]>
 ): JSX.Children => {
     const result = type.visit<JSX.Children>({
-        array: (typ) => context.typeDetails(typ.elementType, renderAnchors),
-        intersection: (typ) => typ.types.map((t) => context.typeDetails(t, renderAnchors)),
+        array: (typ) => context.typeDetails(reflectionOwningType, typ.elementType, renderAnchors),
+        intersection: (typ) => typ.types.map((t) => context.typeDetails(reflectionOwningType, t, renderAnchors)),
         union: (typ) => {
             const children: JSX.Children = [];
             for (let i = 0; i < typ.types.length; ++i) {
@@ -254,7 +252,7 @@ export const typeDetailsImpl = (
                     <li>
                         {context.type(typ.types[i])}
                         {context.displayParts(typ.elementSummaries?.[i])}
-                        {context.typeDetailsIfUseful(typ.types[i])}
+                        {context.typeDetailsIfUseful(reflectionOwningType, typ.types[i])}
                     </li>
                 );
             }
@@ -277,7 +275,7 @@ export const typeDetailsImpl = (
                 // Ensure we don't go into an infinite loop here
                 expanded.add(target);
                 const details = target.type
-                    ? context.typeDetails(target.type, renderAnchors)
+                    ? context.typeDetails(reflectionOwningType, target.type, renderAnchors)
                     : declarationDetails(context, target, renderAnchors);
                 expanded.delete(target);
                 return details;

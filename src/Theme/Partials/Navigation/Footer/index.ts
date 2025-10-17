@@ -12,7 +12,11 @@
  */
 
 /**
+ *  * This module contains the components that are used when rendering the page footer.
+ *
  * @module Theme/Partials/Navigation/Footer
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
+ *
+ * @internal
  */
 export * from './footer';

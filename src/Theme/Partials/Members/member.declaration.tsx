@@ -17,12 +17,13 @@
  */
 
 import { JSX } from 'typedoc';
-import type { DeclarationReflection, DefaultThemeRenderContext } from 'typedoc';
+import type { DeclarationReflection } from 'typedoc';
 
-import { FormattedCodeBuilder, FormattedCodeGenerator, FormatterNode, Wrap, hasTypeParameters } from '../../../Utils';
+import type { TypedocRendererContext } from '../../../Wrappers';
+import { FormattedCodeBuilder, FormattedCodeGenerator, FormatterNode, Wrap, hasTypeParameters } from '../../Utils';
 
-export const memberDeclaration = (context: DefaultThemeRenderContext, props: DeclarationReflection): JSX.Element => {
-    const builder = new FormattedCodeBuilder(context.urlTo);
+export const memberDeclaration = (context: TypedocRendererContext, props: DeclarationReflection): JSX.Element => {
+    const builder = new FormattedCodeBuilder(context.router, context.model);
     const content: FormatterNode[] = [];
     builder.member(content, props, { topLevelLinks: false });
     const generator = new FormattedCodeGenerator(context.options.getValue('typePrintWidth'));
@@ -30,12 +31,12 @@ export const memberDeclaration = (context: DefaultThemeRenderContext, props: Dec
 
     /** Fix for #2717. If type is the same as value the default value is omitted */
     const shouldRenderDefaultValue = (): boolean => {
-        if (props.type && props.type.type === 'literal') {
+        if (props.type?.type === 'literal') {
             const reflectionTypeString = props.type.toString();
 
             const defaultValue = props.defaultValue;
 
-            if (defaultValue === undefined || reflectionTypeString === defaultValue.toString()) {
+            if (defaultValue === undefined || reflectionTypeString === defaultValue) {
                 return false;
             }
         }
@@ -60,7 +61,7 @@ export const memberDeclaration = (context: DefaultThemeRenderContext, props: Dec
 
             {hasTypeParameters(props) && context.typeParameters(props.typeParameters)}
 
-            {props.type && context.typeDeclaration(props.type)}
+            {props.type && context.typeDeclaration(props, props.type)}
 
             {context.commentTags(props)}
 

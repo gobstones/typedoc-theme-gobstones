@@ -16,22 +16,24 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import { DefaultThemeRenderContext, JSX, Reflection } from 'typedoc';
+import { JSX, Reflection, TranslatedString } from 'typedoc';
 
-import { join } from '../../../Utils/lib';
+import { translateTagName } from '../../../Strings';
+import type { TypedocRendererContext } from '../../../Wrappers';
+import { join } from '../../Utils';
 
-export const reflectionFlags = (context: DefaultThemeRenderContext, props: Reflection): JSX.Element => {
+export const reflectionFlags = (context: TypedocRendererContext, props: Reflection): JSX.Element => {
     const flagsNotRendered: `@${string}`[] = context.options.getValue('notRenderedTags') ?? [
         '@showCategories',
         '@showGroups',
         '@hideCategories',
         '@hideGroups'
     ];
-    const allFlags = props.flags.getFlagStrings(context.internationalization);
+    const allFlags = props.flags.getFlagStrings();
     if (props.comment) {
         for (const tag of props.comment.modifierTags) {
             if (!flagsNotRendered.includes(tag)) {
-                allFlags.push(context.internationalization.translateTagName(tag));
+                allFlags.push(translateTagName(tag) as TranslatedString);
             }
         }
     }

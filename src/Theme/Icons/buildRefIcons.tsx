@@ -19,9 +19,10 @@
 import assert from 'assert';
 
 import { JSX } from 'typedoc';
-import type { DefaultThemeRenderContext } from 'typedoc';
 
 import { IconRecord } from './IconType';
+
+import type { TypedocRendererContext } from '../../Wrappers';
 
 /**
  * Returns a record of all possible icon names with a function that returns
@@ -31,7 +32,7 @@ import { IconRecord } from './IconType';
  * @param context - The render context of this theme
  * @returns A function that creates all icons.
  */
-export const buildRefIcons = <T extends IconRecord>(icons: T, context: DefaultThemeRenderContext): T => {
+export const buildRefIcons = <T extends IconRecord>(icons: T, context: TypedocRendererContext): T => {
     const refs: Record<string, () => JSX.Element> = {};
 
     for (const [name, builder] of Object.entries(icons)) {

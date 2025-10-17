@@ -16,11 +16,13 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import { DefaultThemeRenderContext, JSX, Reflection, ReflectionKind } from 'typedoc';
+import { JSX, Reflection, ReflectionKind } from 'typedoc';
 
+import { translateTagName } from '../../../Strings';
+import type { TypedocRendererContext } from '../../../Wrappers';
 import { anchorIcon } from '../Others/anchorIcon';
 
-export const commentTags = (context: DefaultThemeRenderContext, props: Reflection): JSX.Element | undefined => {
+export const commentTags = (context: TypedocRendererContext, props: Reflection): JSX.Element | undefined => {
     if (!props.comment) return;
 
     const skipSave = props.comment.blockTags.map((tag) => tag.skipRendering);
@@ -46,9 +48,7 @@ export const commentTags = (context: DefaultThemeRenderContext, props: Reflectio
             {beforeTags}
             <div class="tsd-comment tsd-typography">
                 {tags.map((item) => {
-                    const name = item.name
-                        ? `${context.internationalization.translateTagName(item.tag)}: ${item.name}`
-                        : context.internationalization.translateTagName(item.tag);
+                    const name = item.name ? `${translateTagName(item.tag)}: ${item.name}` : translateTagName(item.tag);
 
                     // const anchor = props.getUniqueAliasInPage(name);
                     const anchor: string = context.slugger.slug(name);

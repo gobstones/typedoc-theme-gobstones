@@ -17,24 +17,24 @@
  */
 
 import { JSX } from 'typedoc';
-import type { DeclarationReflection, DefaultThemeRenderContext, DocumentReflection } from 'typedoc';
+import type { DeclarationReflection } from 'typedoc';
 
-import { classNames } from '../../../Utils/lib';
+import type { TypedocRendererContext } from '../../../Wrappers';
+import { classNames } from '../../Utils';
 import { anchorIcon } from '../Others/anchorIcon';
 
-export const memberSignatures = (context: DefaultThemeRenderContext, props: DeclarationReflection): JSX.Element => (
+export const memberSignatures = (context: TypedocRendererContext, props: DeclarationReflection): JSX.Element => (
     <>
-        <div class={classNames({ 'tsd-signatures': true }, context.getReflectionClasses(props))}>
+        <ul class={classNames({ 'tsd-signatures': true }, context.getReflectionClasses(props))}>
             {props.signatures?.map((item) => (
-                <li class={context.getReflectionClasses(item as unknown as DocumentReflection)}>
-                    <div class="tsd-signature tsd-anchor-link">
-                        {item.anchor && <a id={item.anchor} class="tsd-anchor"></a>}
+                <li class={context.getReflectionClasses(item)}>
+                    <div class="tsd-signature tsd-anchor-link" id={context.getAnchor(item)}>
                         {context.memberSignatureTitle(item)}
-                        {anchorIcon(context, item.anchor)}
+                        {anchorIcon(context, context.getAnchor(item))}
                     </div>
                     <div class="tsd-description">{context.memberSignatureBody(item)}</div>
                 </li>
             ))}
-        </div>
+        </ul>
     </>
 );

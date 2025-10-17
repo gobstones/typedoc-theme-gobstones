@@ -16,11 +16,13 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import { DefaultThemeRenderContext, JSX, Reflection } from 'typedoc';
+import { JSX, Reflection } from 'typedoc';
+
+import type { TypedocRendererContext } from '../../../Wrappers';
 
 // Note: Comment modifiers are handled in `renderFlags`
 
-export const commentSummary = (context: DefaultThemeRenderContext, props: Reflection): JSX.Element | undefined => {
+export const commentSummary = (context: TypedocRendererContext, props: Reflection): JSX.Element | undefined => {
     if (props.comment?.summary.some((part) => part.text)) {
         return context.displayParts?.(props.comment.summary);
     }

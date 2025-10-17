@@ -16,9 +16,15 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import { DefaultThemeRenderContext, JSX, SomeType } from 'typedoc';
+import { JSX, Reflection, SomeType } from 'typedoc';
 
 import { typeDetailsImpl } from './typeDetailsImpl';
 
-export const typeDetails = (context: DefaultThemeRenderContext, type: SomeType, renderAnchors: boolean): JSX.Children =>
-    typeDetailsImpl(context, type, renderAnchors);
+import type { TypedocRendererContext } from '../../../Wrappers';
+
+export const typeDetails = (
+    context: TypedocRendererContext,
+    reflectionOwningType: Reflection,
+    type: SomeType,
+    renderAnchors: boolean
+): JSX.Children => typeDetailsImpl(context, reflectionOwningType, type, renderAnchors);

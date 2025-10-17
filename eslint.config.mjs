@@ -149,7 +149,7 @@ const config = eslintTs.config(
                 }
             ],
 
-            // Import is still not v9 compatible, some some rules fail.
+            // Import is still not v9 compatible, so some rules fail.
             // Instead of using the default provided configurations,
             // we manually configure the rules, to avoid rules that have problems.
 

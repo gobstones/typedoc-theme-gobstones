@@ -17,7 +17,10 @@
  */
 
 import { JSX, ReflectionKind } from 'typedoc';
-import type { DeclarationReflection, DefaultThemeRenderContext, PageEvent, ProjectReflection } from 'typedoc';
+import type { DeclarationReflection, PageEvent, ProjectReflection } from 'typedoc';
+
+import { i18n } from '../../Strings';
+import type { TypedocRendererContext } from '../../Wrappers';
 
 /**
  * Get the roots of the given project reflection.
@@ -62,14 +65,14 @@ export const getHierarchyRoots = (project: ProjectReflection): DeclarationReflec
  * @returns A JSX.Element to render the hierarchy.
  */
 export const hierarchyTemplate = (
-    context: DefaultThemeRenderContext,
+    context: TypedocRendererContext,
     props: PageEvent<ProjectReflection>
 ): JSX.Element => {
     const seen = new Set<DeclarationReflection>();
 
     return (
         <>
-            <h2>{context.i18n.theme_hierarchy_summary()}</h2>
+            <h2>{i18n.theme_hierarchy_summary()}</h2>
             {getHierarchyRoots(props.project).map((root) => (
                 <ul class="tsd-full-hierarchy">{fullHierarchy(context, root, seen)}</ul>
             ))}
@@ -88,7 +91,7 @@ export const hierarchyTemplate = (
  * @returns A JSX.Element to render the hierarchy of this element.
  */
 const fullHierarchy = (
-    context: DefaultThemeRenderContext,
+    context: TypedocRendererContext,
     root: DeclarationReflection,
     seen = new Set<DeclarationReflection>()
 ): JSX.Element => {

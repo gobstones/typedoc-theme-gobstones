@@ -16,7 +16,10 @@
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import { DefaultThemeRenderContext, JSX, ReflectionFlag } from 'typedoc';
+import { JSX, ReflectionFlag, ReflectionFlags, TagString } from 'typedoc';
+
+import { i18n, translateTagName } from '../../../../Strings';
+import type { TypedocRendererContext } from '../../../../Wrappers';
 
 const flagOptionNameToReflectionFlag = {
     protected: ReflectionFlag.Protected,
@@ -26,7 +29,7 @@ const flagOptionNameToReflectionFlag = {
 };
 
 const buildFilterItem = (
-    context: DefaultThemeRenderContext,
+    context: TypedocRendererContext,
     name: string,
     displayName: string,
     defaultValue: boolean
@@ -40,7 +43,7 @@ const buildFilterItem = (
     </li>
 );
 
-export const settings = (context: DefaultThemeRenderContext): JSX.Element => {
+export const settings = (context: TypedocRendererContext): JSX.Element => {
     const defaultFilters = context.options.getValue('visibilityFilters') as Record<string, boolean>;
 
     const visibilityOptions: JSX.Element[] = [];
@@ -53,12 +56,7 @@ export const settings = (context: DefaultThemeRenderContext): JSX.Element => {
                 .toLowerCase();
 
             visibilityOptions.push(
-                buildFilterItem(
-                    context,
-                    filterName,
-                    context.internationalization.translateTagName(key as `@${string}`),
-                    defaultFilters[key]
-                )
+                buildFilterItem(context, filterName, translateTagName(key as TagString), defaultFilters[key])
             );
         } else if (
             (key === 'protected' && !context.options.getValue('excludeProtected')) ||
@@ -70,7 +68,7 @@ export const settings = (context: DefaultThemeRenderContext): JSX.Element => {
                 buildFilterItem(
                     context,
                     key,
-                    context.internationalization.flagString(flagOptionNameToReflectionFlag[key]),
+                    ReflectionFlags.flagString(flagOptionNameToReflectionFlag[key]),
                     defaultFilters[key]
                 )
             );
@@ -78,31 +76,28 @@ export const settings = (context: DefaultThemeRenderContext): JSX.Element => {
     }
 
     // Settings panel above navigation
-
     return (
         <div class="tsd-navigation settings">
             <details class="tsd-accordion" open={false}>
                 <summary class="tsd-accordion-summary">
-                    <h3>
-                        {context.icons.chevronDown()}
-                        {context.i18n.theme_settings()}
-                    </h3>
+                    {context.icons.chevronDown()}
+                    <h3>{i18n.theme_settings()}</h3>
                 </summary>
                 <div class="tsd-accordion-details">
-                    {visibilityOptions.length && (
+                    {!!visibilityOptions.length && (
                         <div class="tsd-filter-visibility">
-                            <span class="settings-label">{context.i18n.theme_member_visibility()}</span>
+                            <span class="settings-label">{i18n.theme_member_visibility()}</span>
                             <ul id="tsd-filter-options">{...visibilityOptions}</ul>
                         </div>
                     )}
                     <div class="tsd-theme-toggle">
                         <label class="settings-label" for="tsd-theme">
-                            {context.i18n.theme_theme()}
+                            {i18n.theme_theme()}
                         </label>
                         <select id="tsd-theme">
-                            <option value="os">{context.i18n.theme_os()}</option>
-                            <option value="light">{context.i18n.theme_light()}</option>
-                            <option value="dark">{context.i18n.theme_dark()}</option>
+                            <option value="os">{i18n.theme_os()}</option>
+                            <option value="light">{i18n.theme_light()}</option>
+                            <option value="dark">{i18n.theme_dark()}</option>
                         </select>
                     </div>
                 </div>

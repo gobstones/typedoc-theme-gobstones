@@ -12,30 +12,28 @@
  */
 
 /**
- * @module Main
+ * @module Options
  * @author Alan Rodas Bonjour <alanrodas@gmail.com>
  */
 
-import { Application } from 'typedoc';
+import { TypedocApplication } from '../Wrappers';
 
 /**
- * Return the theme's default configuration to be set, if no configuration
+ * Returns the theme's default configuration to be set, if no configuration
  * that overwrites it is provided by the user.
  *
  * @param typedocApp - The instance of the running TypeDoc application
  *
  * @returns A TypeDoc partial configuration.
- *
- * @internal
  */
-export const getDefaults = (typedocApp: Application): Record<string, unknown> => ({
+export const DefaultOptions = (typedocApp: TypedocApplication): Record<string, unknown> => ({
     // Input
     entryPointStrategy: 'expand',
-    exclude: ['./node_modules/**/*', './**/*.test.ts', './src/index.ts'],
+    exclude: ['./node_modules/**/*', './**/*.test.ts', './src/index.tsx?'],
     excludeExternals: true,
     excludeInternal: false,
     excludePrivate: false,
-    // Input (at TypeDoc docs, but is actually output)
+    // // Input (at TypeDoc docs, but is actually output)
     disableSources: false,
     includeVersion: true,
     // Output
