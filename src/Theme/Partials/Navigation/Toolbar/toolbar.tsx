@@ -26,7 +26,7 @@ import { getDisplayName } from '../../../Utils';
 export const toolbar = (context: TypedocRendererContext, props: PageEvent<Reflection>): JSX.Element => (
     <header class="tsd-page-toolbar">
         <div class="tsd-toolbar-contents container">
-            <img class="tsd-toolbar-icon" src="/assets/img/iso_gobstones.svg" />
+            <img class="tsd-toolbar-icon" src="assets/img/iso_gobstones.svg" />
 
             <a href={context.options.getValue('titleLink') || context.relativeURL('index.html')} class="title">
                 {getDisplayName(props.project)}
@@ -76,7 +76,7 @@ export const toolbar = (context: TypedocRendererContext, props: PageEvent<Reflec
             >
                 <img
                     class="tsd-toolbar-icon tsd-icon-inverted"
-                    src="/assets/img/iso_github.svg"
+                    src="assets/img/iso_github.svg"
                     alt="Go to repository"
                 />
             </a>
