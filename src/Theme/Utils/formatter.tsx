@@ -447,7 +447,10 @@ const typeBuilder: TypeVisitor<FormatterNode, [FormattedCodeBuilder, { topLevelL
         if (reflection) {
             if (reflection.kindOf(ReflectionKind.TypeParameter)) {
                 name = simpleElement(
-                    <a class="tsd-signature-type tsd-kind-type-parameter" href={builder.urlTo(reflection)}>
+                    <a
+                        class="tsd-signature-type tsd-kind-type-parameter"
+                        href={builder.hasUrl(reflection) ? builder.urlTo(reflection) : ''}
+                    >
                         {reflection.name}
                     </a>
                 );
@@ -579,6 +582,10 @@ export class FormattedCodeBuilder {
         private readonly router: Router,
         private readonly relativeReflection: Reflection
     ) {}
+
+    public hasUrl(refl: Reflection): boolean {
+        return this.router.hasUrl(refl);
+    }
 
     public urlTo(refl: Reflection): string {
         return this.router.relativeUrl(this.relativeReflection, refl);
